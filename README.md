@@ -12,3 +12,5 @@ python-pptx
 
 ...
 
+# License
+Geekppt is available under MIT license. 
