@@ -1,11 +1,11 @@
 # Head1
 
-These text should be within same slide as head
+Each content of a head is allocated a slide
 
 
 
 
-## Head2
+# Head2
 
 **BOLD TEXT**
 
@@ -19,7 +19,10 @@ int main() {
 } 
 ```
 
-Each Head and content in the head is allocated with one slide
+
+#  
+
+empty head
 
 ```
 # short, incomplete python code
