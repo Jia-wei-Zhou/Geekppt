@@ -48,10 +48,10 @@ void CodeEvaluation::generateCmakeFile(const std::string& project_name,
 
     std::vector<std::string> lib_names;
     for(auto&& lib : libs) {
-        size_t separator_index = lib.find_last_of(std::filesystem::path::preferred_separator);
+        int separator_index = lib.find_last_of(std::filesystem::path::preferred_separator);
         separator_index = (separator_index == std::string::npos) ? 0 : separator_index + 1;
 
-        size_t dot_index = lib.find_last_of('.');
+        int dot_index = lib.find_last_of('.');
         std::string lib_name = lib.substr(separator_index, dot_index - separator_index);
         lib_names.push_back(lib_name);
 
