@@ -60,7 +60,7 @@ public:
 
     // todo 3 Luo Wenxiang
     // /* if use cmake, HH's cmake is poor, Luo will write this */ 
-    void generateCmakeFile(const std::string& project_name,
+    static void generateCmakeFile(const std::string& project_name,
                                   const std::string& main_file,
                                   const std::string& output_cmake_path,
                                   std::vector<std::string>& libs,
