@@ -64,8 +64,8 @@ public:
                                   const std::string& main_file,
                                   const std::string& output_cmake_path,
                                   std::vector<std::string>& libs,
-                                  const int cpp_standard,
-                                  const std::string& cmake_mini_version);
+                                  const int cpp_standard = 20,
+                                  const std::string& cmake_mini_version = "3.20");
     
 
     /* done!
