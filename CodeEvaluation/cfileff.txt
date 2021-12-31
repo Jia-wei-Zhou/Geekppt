@@ -1,5 +1,3 @@
-int main()
-{
-    std::cout << "HELLO WORLD!" << std::endl;
-
+int main{
+	std:: cout<<"hello world"<<std:: endl;
 }

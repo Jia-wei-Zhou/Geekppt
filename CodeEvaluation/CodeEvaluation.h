@@ -42,7 +42,7 @@ public:
     bool createAndWriteFile();
 
     /* change suffix .txt to certain type */
-    bool changeSuffix(LanguageType language);
+    std::string changeSuffix(LanguageType language);
 
     // todo 2 Hao Huang
 
