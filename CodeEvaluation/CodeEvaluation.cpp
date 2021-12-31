@@ -29,8 +29,8 @@ void CodeEvaluation::generateCmakeFile(const std::string& project_name,
                                        const std::string& main_file,
                                        const std::string& output_cmake_path,
                                        std::vector<std::string>& libs,
-                                       const int cpp_standard = 20,
-                                       const std::string& cmake_mini_version = "3.20") {
+                                       const int cpp_standard,
+                                       const std::string& cmake_mini_version) {
     // Determine if the validity of the output cmake lists
     if(!output_cmake_path.ends_with("CMakeLists.txt")) {
         throw std::runtime_error("Error in the path for output CMakeLists.txt");
