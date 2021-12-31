@@ -26,11 +26,11 @@ std::string CodeEvaluation::executeAndGetFromCmd(std::string cmd) {
 }
 
 void CodeEvaluation::generateCmakeFile(const std::string& project_name,
-                                              const std::string& main_file,
-                                              const std::string& output_cmake_path,
-                                              std::vector<std::string>& libs,
-                                              const int cpp_standard = 20,
-                                              const std::string& cmake_mini_version = "3.20") {
+                                       const std::string& main_file,
+                                       const std::string& output_cmake_path,
+                                       std::vector<std::string>& libs,
+                                       const int cpp_standard = 20,
+                                       const std::string& cmake_mini_version = "3.20") {
     // Determine if the validity of the output cmake lists
     if(!output_cmake_path.ends_with("CMakeLists.txt")) {
         throw std::runtime_error("Error in the path for output CMakeLists.txt");
@@ -47,11 +47,12 @@ void CodeEvaluation::generateCmakeFile(const std::string& project_name,
     output << "set(CMAKE_CXX_STANDARD " << cpp_standard << ")\n\n";
 
     std::vector<std::string> lib_names;
-    for(auto&& lib : libs)
-    {
+    for(auto&& lib : libs) {
         size_t separator_index = lib.find_last_of(std::filesystem::path::preferred_separator);
+        separator_index = (separator_index == std::string::npos) ? 0 : separator_index + 1;
+
         size_t dot_index = lib.find_last_of('.');
-        std::string lib_name = lib.substr(separator_index + 1, dot_index - separator_index - 1);
+        std::string lib_name = lib.substr(separator_index, dot_index - separator_index);
         lib_names.push_back(lib_name);
 
         output << "add_library(" << lib_name << " " << lib << ")\n";
