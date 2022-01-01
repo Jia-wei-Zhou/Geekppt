@@ -1,5 +1,9 @@
 #include "CodeEvaluation.h"
 
+/*  Comment: this function can be used in function generateCmakeFile, 
+    whereas it is recommended to use the same method in generateCmakeFile
+    i.e. preferred separator to distinquish between Unix and Windows. 
+    -- Jiawei Zhou  */
 std::string CodeEvaluation::extractFilename(std::string const& address) {
     std::string filename = "";
     for (auto it = address.begin(); it != address.end(); ++it) {
@@ -14,6 +18,7 @@ std::string CodeEvaluation::extractFilename(std::string const& address) {
     if (find(filename.begin(), filename.end(), '.') != filename.end()) {
         return filename.substr(0, find(filename.begin(), filename.end(), '.') - filename.begin());
     }
+    filename_ = filename;
     return filename;
 }
 
@@ -43,25 +48,45 @@ std::string CodeEvaluation::generateCompileCommand(std::string const& compiler) 
 }
 
 
-std::string CodeEvaluation::generateRunCommand(std::string const& filename, std::string const& input) {
-    std::string run_command = "";
-    switch(language_) {
-        case PYTHON: 
-            run_command += "python ";
-            break;
-        case JAVA:
-            run_command += "java ";
-            break;
-        case CPP:
-            run_command += "java ";
-            break;
-        default: 
-            break;
+std::string CodeEvaluation::generateInputCommand(std::string const& input) {
+    if (PLATFORM == WINDOWS) {
+        return generateWindowsInputCommand(input);
     }
-    run_command = run_command + filename + " < &" + input;
-    return run_command;
+    else if (PLATFORM == UNIX) {
+        return generateUnixInputCommand(input);
+    }
 }
 
+
+std::string CodeEvaluation::generateWindowsInputCommand(std::string const& input) {
+    std::ofstream input_file;
+    std::string input_filename = filename + "_input.txt"
+    input_file.open(input_filename, std::ios::out | std::ios::trunc);
+    if (input_file.fail()) {
+        throw std::runtime_error("Fail to create/open input.txt");
+    }
+
+    input_file << input;
+
+    input_file.close();
+    if (input_file.good()) {
+        throw std::runtime_error("Fail to close input.txt");
+    }
+    return " < " + input_filename;
+}
+
+
+std::string CodeEvaluation::generateUnixInputCommand(std::string const& input) {
+    return " < &" + input;
+}
+
+
+std::string CodeEvaluation::generateRunCommand(std::string const& filename, std::string const& input) {
+    std::string run_command = "";
+    run_command = filename + generateInputCommand(input);
+
+    return run_command;
+}
 
 
 void CodeEvaluation::generateCmakeFile(const std::string& project_name,
@@ -87,6 +112,8 @@ void CodeEvaluation::generateCmakeFile(const std::string& project_name,
 
     std::vector<std::string> lib_names;
     for(auto&& lib : libs) {
+        /*  Comment: this part can be extracted and replaced 
+            with a separate function in the future -- Jiawei Zhou*/
         int separator_index = lib.find_last_of(std::filesystem::path::preferred_separator);
         separator_index = (separator_index == std::string::npos) ? 0 : separator_index + 1;
 

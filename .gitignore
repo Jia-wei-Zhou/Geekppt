@@ -81,6 +81,9 @@ fabric.properties
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# visual studio =============================
+.vs/
+
 # C++ ================================
  Prerequisites
 *.d
