@@ -1,7 +1,14 @@
 #pragma once
-#ifdef _WIN32
-#define popen _popen
-#define pclose _pclose
+
+// macro defines to determine the platform
+#define WINDOWS 0
+#define UNIX 1
+#if defined(_WIN32)
+    #define PLATFORM WINDOWS
+    #define popen _popen
+    #define pclose _pclose
+#else
+    #define PLATFORM UNIX
 #endif
 
 #include <string>
@@ -28,6 +35,7 @@ private:
   std::string code_;
   LanguageType language_ ;
   std::string address_;
+  std::string filename_;
 
 public:
     CodeEvaluation(LanguageType language, std::string address): 
@@ -66,6 +74,12 @@ public:
     should generate "./main < &ZhaiQianhao" 
      */
     std::string generateRunCommand(std::string const& filename, std::string const& input);
+
+    /* This function is to generate input for different platforms. */
+    std::string generateInputCommand(std::string const& input);
+    /* Following two functions generate input command for specific platform */
+    std::string generateWindowsInputCommand(std::string const& input);
+    std::string generateUnixInputCommand(std::string const& input);
 
     // todo 3 Luo Wenxiang
     // /* if use cmake, HH's cmake is poor, Luo will write this */ 
