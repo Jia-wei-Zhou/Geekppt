@@ -1,29 +1,68 @@
 #include "CodeEvaluation.h"
-#include <fstream>
-#include <stdexcept>
-#include <filesystem>
 
-void CodeEvaluation::executeInCmdLine(std::string cmd) {
-    std::array<char, 128> buffer;
-    std::string result;
-    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(&cmd[0], "r"), pclose);
-    if (!pipe) {
-        throw std::runtime_error("popen() failed!");
+std::string CodeEvaluation::extractFilename(std::string const& address) {
+    std::string filename = "";
+    for (auto it = address.begin(); it != address.end(); ++it) {
+        if (*it == '/' || *it == '\\') {
+            filename = "";
+        }
+        else {
+            filename.push_back(*it);
+        }
     }
+
+    if (find(filename.begin(), filename.end(), '.') != filename.end()) {
+        return filename.substr(0, find(filename.begin(), filename.end(), '.') - filename.begin());
+    }
+    return filename;
 }
 
-std::string CodeEvaluation::executeAndGetFromCmd(std::string cmd) {
-    std::array<char, 128> buffer;
-    std::string result;
-    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(&cmd[0], "r"), pclose);
-    if (!pipe) {
-        throw std::runtime_error("popen() failed!");
+
+std::string CodeEvaluation::generateCompileCommand(std::string const& compiler) {
+    std::string compileCmd = compiler;
+    // PYTHON dose not need compiling
+    // There should be defensive sentence when executing cmd (e.g. cmd.length() != 0)
+    if (language_ == PYTHON) {return compileCmd;}
+    compileCmd.push_back(' ');
+    compileCmd += extractFilename(address_);
+
+    switch(language_) {
+        case JAVA: 
+            compileCmd += ".java";
+            return compileCmd;
+        case CPP: 
+            compileCmd += ".cpp";
+            break;
+        default: 
+            break;
     }
-    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
-        result += buffer.data();
-    }
-    return result;
+
+    compileCmd += " -o ";
+    compileCmd += extractFilename(address_);
+    return compileCmd;
 }
+
+
+std::string CodeEvaluation::generateRunCommand(std::string const& filename, std::string const& input) {
+    std::string run_command = "";
+    switch(language_) {
+        case PYTHON: 
+            run_command += "python ";
+            break;
+        case JAVA:
+            run_command += "java ";
+            break;
+        case CPP:
+            run_command += "java ";
+            break;
+        default: 
+            break;
+    }
+    run_command = run_command + filename + " < &" + input;
+    return run_command;
+}
+
+
 
 void CodeEvaluation::generateCmakeFile(const std::string& project_name,
                                        const std::string& main_file,
@@ -66,4 +105,32 @@ void CodeEvaluation::generateCmakeFile(const std::string& project_name,
 
     // Finish generating CMakeLists.txt
     output.close();
+}
+
+
+void CodeEvaluation::executeInCmdLine(std::string cmd) {
+    // defend empty compile cmd (e.g. language_ is PYTHON)
+    if (cmd.length() == 0) {return;}
+    std::array<char, 128> buffer;
+    std::string result;
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(&cmd[0], "r"), pclose);
+    if (!pipe) {
+        throw std::runtime_error("popen() failed!");
+    }
+}
+
+
+std::string CodeEvaluation::executeAndGetFromCmd(std::string cmd) {
+    // defend empty compile cmd (e.g. language_ is PYTHON)
+    if (cmd.length() == 0) {return;}
+    std::array<char, 128> buffer;
+    std::string result;
+    std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(&cmd[0], "r"), pclose);
+    if (!pipe) {
+        throw std::runtime_error("popen() failed!");
+    }
+    while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+        result += buffer.data();
+    }
+    return result;
 }

@@ -1,3 +1,4 @@
+#pragma once
 #ifdef _WIN32
 #define popen _popen
 #define pclose _pclose
@@ -11,6 +12,9 @@
 #include <stdexcept>
 #include <array>
 #include <vector>
+#include <filesystem>
+#include <algorithm>
+
 
 enum LanguageType {
     CPP, 
@@ -31,6 +35,11 @@ public:
         code_ = readTxt(address_);
     }
 
+    /* helper func by HH, 
+       extract from absolute address the filename without suffix
+       e.g. ./home/Admin/lecture_related/source.txt -> source */
+    std::string extractFilename(std::string const& address);
+
     // todo 1 Zifan Wang
     /* read from a txt file and return its content as string
     */
@@ -50,13 +59,13 @@ public:
     /* if not use cmake, generate compile command from a certain language and compiler
     e.g. compiler = "g++" should return "g++ filename.cpp -o filename"
     */
-    std::string generateCompileCommand(std::string compiler);
+    std::string generateCompileCommand(std::string const& compiler);
 
     /* This is for unix env (defined by macro)
     e.g. filename = "main", input = "ZhaiQianhao" 
     should generate "./main < &ZhaiQianhao" 
      */
-    std::string generateRunCommand(std::string filename, std::string input);
+    std::string generateRunCommand(std::string const& filename, std::string const& input);
 
     // todo 3 Luo Wenxiang
     // /* if use cmake, HH's cmake is poor, Luo will write this */ 
