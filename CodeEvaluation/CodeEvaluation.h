@@ -44,7 +44,7 @@ public:
     language_(language), address_(address) {
         code_ = readTxt(address_);
         filename_ = extractFilename(address_);
-        // Default compiler
+        // Qianhao, Default compiler
         if (language == CPP) {
             compiler_ = "g++";
         }

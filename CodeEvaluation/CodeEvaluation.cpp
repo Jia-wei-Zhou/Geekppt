@@ -83,7 +83,7 @@ std::string CodeEvaluation::generateUnixInputCommand(std::string const& input) {
 
 std::string CodeEvaluation::generateRunCommand(std::string const& filename, std::string const& input) {
     std::string run_command = "./";
-    run_command += filename + (input.size() ? generateInputCommand(input) : "");
+    run_command += filename + (input.size() ? generateInputCommand(input) : ""); // Modified by Qianhao, added the execution symbol
 
     return run_command;
 }
@@ -96,9 +96,9 @@ void CodeEvaluation::generateCmakeFile(const std::string& project_name,
                                        const int cpp_standard,
                                        const std::string& cmake_mini_version) {
     // Determine if the validity of the output cmake lists
-    /* if(!output_cmake_path.ends_with("CMakeLists.txt")) {
+    if(!output_cmake_path.ends_with("CMakeLists.txt")) {
         throw std::runtime_error("Error in the path for output CMakeLists.txt");
-    }*/
+    }
 
     std::ofstream output(output_cmake_path);
     if(output.fail()) {
@@ -165,6 +165,7 @@ std::string CodeEvaluation::executeAndGetFromCmd(std::string cmd) {
 
 std::string CodeEvaluation::runCode(std::string input) {
     try {
+        filename_ = extractFilename(address_);
         changeSuffix(language_);
         std::string compileCmd = generateCompileCommand(compiler_);
         executeInCmdLine(compileCmd);
@@ -181,6 +182,7 @@ std::string CodeEvaluation::runCode(std::string input) {
 std::string CodeEvaluation::runCode(std::string address, std::string input) {
     try {
         address_ = address;
+        filename_ = extractFilename(address_);
         changeSuffix(language_);
         std::string compileCmd = generateCompileCommand(compiler_);
         executeInCmdLine(compileCmd);
