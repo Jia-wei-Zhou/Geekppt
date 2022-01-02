@@ -82,8 +82,8 @@ std::string CodeEvaluation::generateUnixInputCommand(std::string const& input) {
 
 
 std::string CodeEvaluation::generateRunCommand(std::string const& filename, std::string const& input) {
-    std::string run_command = "";
-    run_command = filename + generateInputCommand(input);
+    std::string run_command = "./";
+    run_command += filename + (input.size() ? generateInputCommand(input) : ""); // Modified by Qianhao, added the execution symbol
 
     return run_command;
 }
@@ -162,6 +162,40 @@ std::string CodeEvaluation::executeAndGetFromCmd(std::string cmd) {
     return result;
 }
 
+<<<<<<< HEAD
+
+std::string CodeEvaluation::runCode(std::string input) {
+    try {
+        filename_ = extractFilename(address_);
+        changeSuffix(language_);
+        std::string compileCmd = generateCompileCommand(compiler_);
+        executeInCmdLine(compileCmd);
+        std::string runCmd = generateRunCommand(filename_, input);
+        return executeAndGetFromCmd(runCmd);
+    } 
+    catch(std::runtime_error errors) {
+        std::cerr << "Error message:" << errors.what() << '\n';
+        exit(1);
+    }
+}
+
+
+std::string CodeEvaluation::runCode(std::string address, std::string input) {
+    try {
+        address_ = address;
+        filename_ = extractFilename(address_);
+        changeSuffix(language_);
+        std::string compileCmd = generateCompileCommand(compiler_);
+        executeInCmdLine(compileCmd);
+        std::string runCmd = generateRunCommand(filename_, input);
+        return executeAndGetFromCmd(runCmd);
+    } 
+    catch(std::runtime_error errors) {
+        std::cerr << "Error message:" << errors.what() << '\n';
+        exit(1);
+    }
+}
+=======
 std::string CodeEvaluation::readTxt(std::string address) const {
     std::ifstream input_file(address);
     if (!input_file.is_open()) {
@@ -199,3 +233,4 @@ std::string CodeEvaluation::changeSuffix(LanguageType language) {
     }
     return address;
 }
+>>>>>>> 78b5a5b7278d870b76271ee9b00c4773d82127e3

@@ -58,7 +58,7 @@ int main() {
     myCode.set_address("sampleCode1.txt");
     std::string code_result_1 = myCode.runCode("");
     std::cout << "Result for sampleCode1 is: " << code_result_1 << "\n\n";
-
+    
     std::string code_result_2 = myCode.runCode("sampleCode2.txt", "1234");
     std::cout << "Result for sampleCode2 is: " << code_result_2 << "\n\n";
 

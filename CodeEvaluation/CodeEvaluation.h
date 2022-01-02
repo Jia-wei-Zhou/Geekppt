@@ -32,10 +32,18 @@ enum LanguageType {
 
 class CodeEvaluation {
 private:
+<<<<<<< HEAD
+  std::string code_;
+  LanguageType language_ ;
+  std::string address_;
+  std::string filename_;
+  std::string compiler_;  // This private member added by qianhao, which indicates the compiler used.
+=======
     std::string code_;
     LanguageType language_;
     std::string address_;
     std::string filename_;
+>>>>>>> 78b5a5b7278d870b76271ee9b00c4773d82127e3
 
 public:
     /* constructors */
@@ -43,8 +51,24 @@ public:
         language_(language), address_(address) {
         code_ = readTxt(address_);
         filename_ = extractFilename(address_);
+        // Qianhao, Default compiler
+        if (language == CPP) {
+            compiler_ = "g++";
+        }
+        else if (language == JAVA) {
+            compiler_ = "javac";
+        }
+        else {
+            compiler_ = ""; 
+        }
     }
-
+    
+    /* overloading constructors */
+    CodeEvaluation(LanguageType language, std::string const& address, std::string const& compiler): 
+    language_(language), address_(address), compiler_(compiler){
+        code_ = readTxt(address_);
+        filename_ = extractFilename(address_);
+    }
 
     /* helper func by HH,
        extract from absolute address the filename without suffix
@@ -119,5 +143,4 @@ public:
        an overload function is needed for the user to specify the code to be run (addresss) */
     std::string runCode(std::string input);
     std::string runCode(std::string address, std::string input);
-
 };
