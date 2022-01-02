@@ -1,4 +1,5 @@
 #include "CodeEvaluation.h"
+#include <string>
 
 int main() {
     /* ================= test 1 - readTxt(), createAndWriteFile() and changeSuffix() =======================*/

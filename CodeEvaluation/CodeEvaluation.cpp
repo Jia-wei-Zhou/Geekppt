@@ -135,7 +135,7 @@ void CodeEvaluation::generateCmakeFile(const std::string& project_name,
 }
 
 
-void CodeEvaluation::executeInCmdLine(std::string cmd) {
+void CodeEvaluation::executeInCmdLine(std::string const& cmd) {
     // defend empty compile cmd (e.g. language_ is PYTHON)
     if (cmd.length() == 0) { return; }
     std::array<char, 128> buffer;
@@ -147,7 +147,7 @@ void CodeEvaluation::executeInCmdLine(std::string cmd) {
 }
 
 
-std::string CodeEvaluation::executeAndGetFromCmd(std::string cmd) {
+std::string CodeEvaluation::executeAndGetFromCmd(std::string const& cmd) {
     // defend empty compile cmd (e.g. language_ is PYTHON)
     if (cmd.length() == 0) { return ""; }
     std::array<char, 128> buffer;
@@ -162,9 +162,8 @@ std::string CodeEvaluation::executeAndGetFromCmd(std::string cmd) {
     return result;
 }
 
-<<<<<<< HEAD
 
-std::string CodeEvaluation::runCode(std::string input) {
+std::string CodeEvaluation::runCode(std::string const& input) {
     try {
         filename_ = extractFilename(address_);
         changeSuffix(language_);
@@ -180,7 +179,7 @@ std::string CodeEvaluation::runCode(std::string input) {
 }
 
 
-std::string CodeEvaluation::runCode(std::string address, std::string input) {
+std::string CodeEvaluation::runCode(std::string const& address, std::string const& input) {
     try {
         address_ = address;
         filename_ = extractFilename(address_);
@@ -195,8 +194,7 @@ std::string CodeEvaluation::runCode(std::string address, std::string input) {
         exit(1);
     }
 }
-=======
-std::string CodeEvaluation::readTxt(std::string address) const {
+std::string CodeEvaluation::readTxt(std::string const& address) const {
     std::ifstream input_file(address);
     if (!input_file.is_open()) {
         std::cerr << "Could not open the file - '"
@@ -233,4 +231,3 @@ std::string CodeEvaluation::changeSuffix(LanguageType language) {
     }
     return address;
 }
->>>>>>> 78b5a5b7278d870b76271ee9b00c4773d82127e3

@@ -32,18 +32,11 @@ enum LanguageType {
 
 class CodeEvaluation {
 private:
-<<<<<<< HEAD
   std::string code_;
   LanguageType language_ ;
   std::string address_;
   std::string filename_;
   std::string compiler_;  // This private member added by qianhao, which indicates the compiler used.
-=======
-    std::string code_;
-    LanguageType language_;
-    std::string address_;
-    std::string filename_;
->>>>>>> 78b5a5b7278d870b76271ee9b00c4773d82127e3
 
 public:
     /* constructors */
@@ -78,7 +71,7 @@ public:
     // todo 1 Zifan Wang
     /* read from a txt file and return its content as string
     */
-    std::string readTxt(std::string address) const;
+    std::string readTxt(std::string const& address) const;
 
     /* create a file with a certain language type suffix
        and write code_ inside the file
@@ -123,14 +116,14 @@ public:
 
     /* done!
        execute certain command in command line */
-    void executeInCmdLine(std::string cmd);
+    void executeInCmdLine(std::string const& cmd);
 
     /* already finished by Zhou */
-    std::string executeAndGetFromCmd(std::string cmd);
+    std::string executeAndGetFromCmd(std::string const& cmd);
 
 
     // sets
-    void set_address(std::string address) { address_ = address; }
+    void set_address(std::string const& address) { address_ = address; }
     void set_language(LanguageType language) { language_ = language; }
 
     // gets
@@ -141,6 +134,6 @@ public:
     /* use the above methods
        accept input and return output
        an overload function is needed for the user to specify the code to be run (addresss) */
-    std::string runCode(std::string input);
-    std::string runCode(std::string address, std::string input);
+    std::string runCode(std::string const& input);
+    std::string runCode(std::string const& address, std::string const& input);
 };
