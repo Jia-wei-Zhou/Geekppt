@@ -60,16 +60,3 @@ std::string CodeEvaluation::changeSuffix(LanguageType language) {
     }
     return address;
 }
-int main()
-{
-    std::string address = "cfileff.txt";
-    std::string str;
-    enum LanguageType m = JAVA;
-
-    CodeEvaluation c = CodeEvaluation(m, address);
-    str = c.readTxt(address);
-    c.createAndWriteFile();
-    std::cout << str << std::endl;
-
-
-}
