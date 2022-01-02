@@ -63,7 +63,9 @@ public:
        return the filename of the file */
     std::string createAndWriteFile();
 
-    /* change suffix .txt to certain type and return the new filename */
+
+    /* change suffix .txt to certain type and return filename */
+
     std::string changeSuffix(LanguageType language);
 
     // todo 2 Hao Huang
