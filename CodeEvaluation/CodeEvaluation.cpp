@@ -43,7 +43,7 @@ std::string CodeEvaluation::generateCompileCommand(std::string const& compiler) 
     }
 
     compileCmd += " -o ";
-    compileCmd += extractFilename(address_);
+    compileCmd += filename_;
     return compileCmd;
 }
 
@@ -60,7 +60,7 @@ std::string CodeEvaluation::generateInputCommand(std::string const& input) {
 
 std::string CodeEvaluation::generateWindowsInputCommand(std::string const& input) {
     std::ofstream input_file;
-    std::string input_filename = filename + "_input.txt"
+    std::string input_filename = filename_ + "_input.txt";
     input_file.open(input_filename, std::ios::out | std::ios::trunc);
     if (input_file.fail()) {
         throw std::runtime_error("Fail to create/open input.txt");

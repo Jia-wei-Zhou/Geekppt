@@ -38,10 +38,13 @@ private:
   std::string filename_;
 
 public:
-    CodeEvaluation(LanguageType language, std::string address): 
+    /* constructors */
+    CodeEvaluation(LanguageType language, std::string const& address): 
     language_(language), address_(address) {
         code_ = readTxt(address_);
+        filename_ = extractFilename(address_);
     }
+
 
     /* helper func by HH, 
        extract from absolute address the filename without suffix
@@ -56,11 +59,12 @@ public:
     /* create a file with a certain language type suffix
        and write code_ inside the file 
        e.g. address_ filename is 1.txt, language_ is CPP
-       should write to 1.cpp file in the same directory */
-    bool createAndWriteFile();
+       should write to 1.cpp file in the same directory 
+       return the filename of the file */
+    std::string createAndWriteFile();
 
-    /* change suffix .txt to certain type */
-    bool changeSuffix(LanguageType language);
+    /* change suffix .txt to certain type and return the new filename */
+    std::string changeSuffix(LanguageType language);
 
     // todo 2 Hao Huang
 
@@ -99,8 +103,19 @@ public:
     std::string executeAndGetFromCmd(std::string cmd);
 
 
+    // sets
+    void set_address(std::string address) { address_ = address; }
+    void set_language(LanguageType language) { language_ = language; }
+
+    // gets
+    std::string get_filename() { return filename_; }
+
+
     // todo 4 Qianhao Zhai
-    /* use the above methods */
-    bool runCode();
+    /* use the above methods 
+       accept input and return output 
+       an overload function is needed for the user to specify the code to be run (addresss) */
+    std::string runCode(std::string input);
+    std::string runCode(std::string address, std::string input);
 
 };
