@@ -20,7 +20,7 @@ int main() {
 
     read_filename = "sampleText2.txt";
     myCode.set_address(read_filename);
-    
+
     std::cout << "Result for readTxt() from file " << read_filename << " is: \n\n";
     std::cout << myCode.readTxt(read_filename);
 
@@ -43,7 +43,7 @@ int main() {
 
     // lwx ziji laixie
 
-    /* ===================== test 4 - executeInCmdLine() and executeAndGetFromCmd() ======================*/ 
+    /* ===================== test 4 - executeInCmdLine() and executeAndGetFromCmd() ======================*/
     std::cout << "----------------------- test 4 ---------------------------\n\n";
 
     myCode.executeInCmdLine("mkdir input"); // this should create a folder 'input'

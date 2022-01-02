@@ -1,8 +1,8 @@
 #include "CodeEvaluation.h"
 
-/*  Comment: this function can be used in function generateCmakeFile, 
+/*  Comment: this function can be used in function generateCmakeFile,
     whereas it is recommended to use the same method in generateCmakeFile
-    i.e. preferred separator to distinquish between Unix and Windows. 
+    i.e. preferred separator to distinquish between Unix and Windows.
     -- Jiawei Zhou  */
 std::string CodeEvaluation::extractFilename(std::string const& address) {
     std::string filename = "";
@@ -27,19 +27,19 @@ std::string CodeEvaluation::generateCompileCommand(std::string const& compiler) 
     std::string compileCmd = compiler;
     // PYTHON dose not need compiling
     // There should be defensive sentence when executing cmd (e.g. cmd.length() != 0)
-    if (language_ == PYTHON) {return compileCmd;}
+    if (language_ == PYTHON) { return compileCmd; }
     compileCmd.push_back(' ');
     compileCmd += extractFilename(address_);
 
-    switch(language_) {
-        case JAVA: 
-            compileCmd += ".java";
-            return compileCmd;
-        case CPP: 
-            compileCmd += ".cpp";
-            break;
-        default: 
-            break;
+    switch (language_) {
+    case JAVA:
+        compileCmd += ".java";
+        return compileCmd;
+    case CPP:
+        compileCmd += ".cpp";
+        break;
+    default:
+        break;
     }
 
     compileCmd += " -o ";
@@ -90,18 +90,18 @@ std::string CodeEvaluation::generateRunCommand(std::string const& filename, std:
 
 
 void CodeEvaluation::generateCmakeFile(const std::string& project_name,
-                                       const std::string& main_file,
-                                       const std::string& output_cmake_path,
-                                       std::vector<std::string>& libs,
-                                       const int cpp_standard,
-                                       const std::string& cmake_mini_version) {
+    const std::string& main_file,
+    const std::string& output_cmake_path,
+    std::vector<std::string>& libs,
+    const int cpp_standard,
+    const std::string& cmake_mini_version) {
     // Determine if the validity of the output cmake lists
-    if(!output_cmake_path.ends_with("CMakeLists.txt")) {
+    if (!output_cmake_path.ends_with("CMakeLists.txt")) {
         throw std::runtime_error("Error in the path for output CMakeLists.txt");
     }
 
     std::ofstream output(output_cmake_path);
-    if(output.fail()) {
+    if (output.fail()) {
         throw std::runtime_error("Error in opening output files");
     }
 
@@ -111,8 +111,8 @@ void CodeEvaluation::generateCmakeFile(const std::string& project_name,
     output << "set(CMAKE_CXX_STANDARD " << cpp_standard << ")\n\n";
 
     std::vector<std::string> lib_names;
-    for(auto&& lib : libs) {
-        /*  Comment: this part can be extracted and replaced 
+    for (auto&& lib : libs) {
+        /*  Comment: this part can be extracted and replaced
             with a separate function in the future -- Jiawei Zhou*/
         int separator_index = lib.find_last_of(std::filesystem::path::preferred_separator);
         separator_index = (separator_index == std::string::npos) ? 0 : separator_index + 1;
@@ -137,7 +137,7 @@ void CodeEvaluation::generateCmakeFile(const std::string& project_name,
 
 void CodeEvaluation::executeInCmdLine(std::string cmd) {
     // defend empty compile cmd (e.g. language_ is PYTHON)
-    if (cmd.length() == 0) {return;}
+    if (cmd.length() == 0) { return; }
     std::array<char, 128> buffer;
     std::string result;
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(&cmd[0], "r"), pclose);
@@ -149,7 +149,7 @@ void CodeEvaluation::executeInCmdLine(std::string cmd) {
 
 std::string CodeEvaluation::executeAndGetFromCmd(std::string cmd) {
     // defend empty compile cmd (e.g. language_ is PYTHON)
-    if (cmd.length() == 0) {return "";}
+    if (cmd.length() == 0) { return ""; }
     std::array<char, 128> buffer;
     std::string result;
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(&cmd[0], "r"), pclose);
@@ -172,19 +172,19 @@ std::string CodeEvaluation::readTxt(std::string address) const {
     return std::string((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
 }
 
-bool CodeEvaluation::createAndWriteFile() {
+std::string CodeEvaluation::createAndWriteFile() {
     std::string address = changeSuffix(language_);
     if (address == "") {
-        return false;
+        return "file not found";
     }
     std::ofstream ofs;
     ofs.open(address, std::ios::out);
     if (!ofs.is_open()) {
-        return false;
+        return "file can not be opened";
     }
     ofs << code_ << std::endl;
     ofs.close();
-    return true;
+    return address;
 }
 std::string CodeEvaluation::changeSuffix(LanguageType language) {
     std::string address = "";
