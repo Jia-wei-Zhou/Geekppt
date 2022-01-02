@@ -149,7 +149,7 @@ void CodeEvaluation::executeInCmdLine(std::string cmd) {
 
 std::string CodeEvaluation::executeAndGetFromCmd(std::string cmd) {
     // defend empty compile cmd (e.g. language_ is PYTHON)
-    if (cmd.length() == 0) {return;}
+    if (cmd.length() == 0) {return "";}
     std::array<char, 128> buffer;
     std::string result;
     std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(&cmd[0], "r"), pclose);
