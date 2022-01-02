@@ -4,11 +4,11 @@
 #define WINDOWS 0
 #define UNIX 1
 #if defined(_WIN32)
-    #define PLATFORM WINDOWS
-    #define popen _popen
-    #define pclose _pclose
+#define PLATFORM WINDOWS
+#define popen _popen
+#define pclose _pclose
 #else
-    #define PLATFORM UNIX
+#define PLATFORM UNIX
 #endif
 
 #include <string>
@@ -24,7 +24,7 @@
 
 
 enum LanguageType {
-    CPP, 
+    CPP,
     JAVA,
     PYTHON
 };
@@ -32,16 +32,23 @@ enum LanguageType {
 
 class CodeEvaluation {
 private:
+<<<<<<< HEAD
   std::string code_;
   LanguageType language_ ;
   std::string address_;
   std::string filename_;
   std::string compiler_;  // This private member added by qianhao, which indicates the compiler used.
+=======
+    std::string code_;
+    LanguageType language_;
+    std::string address_;
+    std::string filename_;
+>>>>>>> 78b5a5b7278d870b76271ee9b00c4773d82127e3
 
 public:
     /* constructors */
-    CodeEvaluation(LanguageType language, std::string const& address): 
-    language_(language), address_(address) {
+    CodeEvaluation(LanguageType language, std::string const& address) :
+        language_(language), address_(address) {
         code_ = readTxt(address_);
         filename_ = extractFilename(address_);
         // Qianhao, Default compiler
@@ -63,7 +70,7 @@ public:
         filename_ = extractFilename(address_);
     }
 
-    /* helper func by HH, 
+    /* helper func by HH,
        extract from absolute address the filename without suffix
        e.g. ./home/Admin/lecture_related/source.txt -> source */
     std::string extractFilename(std::string const& address);
@@ -74,13 +81,15 @@ public:
     std::string readTxt(std::string address) const;
 
     /* create a file with a certain language type suffix
-       and write code_ inside the file 
+       and write code_ inside the file
        e.g. address_ filename is 1.txt, language_ is CPP
-       should write to 1.cpp file in the same directory 
+       should write to 1.cpp file in the same directory
        return the filename of the file */
     std::string createAndWriteFile();
 
-    /* change suffix .txt to certain type and return the new filename */
+
+    /* change suffix .txt to certain type and return filename */
+
     std::string changeSuffix(LanguageType language);
 
     // todo 2 Hao Huang
@@ -91,8 +100,8 @@ public:
     std::string generateCompileCommand(std::string const& compiler);
 
     /* This is for unix env (defined by macro)
-    e.g. filename = "main", input = "ZhaiQianhao" 
-    should generate "./main < &ZhaiQianhao" 
+    e.g. filename = "main", input = "ZhaiQianhao"
+    should generate "./main < &ZhaiQianhao"
      */
     std::string generateRunCommand(std::string const& filename, std::string const& input);
 
@@ -105,12 +114,12 @@ public:
     // todo 3 Luo Wenxiang
     // /* if use cmake, HH's cmake is poor, Luo will write this */ 
     static void generateCmakeFile(const std::string& project_name,
-                                  const std::string& main_file,
-                                  const std::string& output_cmake_path,
-                                  std::vector<std::string>& libs,
-                                  const int cpp_standard = 20,
-                                  const std::string& cmake_mini_version = "3.20");
-    
+        const std::string& main_file,
+        const std::string& output_cmake_path,
+        std::vector<std::string>& libs,
+        const int cpp_standard = 20,
+        const std::string& cmake_mini_version = "3.20");
+
 
     /* done!
        execute certain command in command line */
@@ -129,8 +138,8 @@ public:
 
 
     // todo 4 Qianhao Zhai
-    /* use the above methods 
-       accept input and return output 
+    /* use the above methods
+       accept input and return output
        an overload function is needed for the user to specify the code to be run (addresss) */
     std::string runCode(std::string input);
     std::string runCode(std::string address, std::string input);
