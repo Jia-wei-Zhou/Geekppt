@@ -32,18 +32,11 @@ enum LanguageType {
 
 class CodeEvaluation {
 private:
-<<<<<<< HEAD
   std::string code_;
   LanguageType language_ ;
   std::string address_;
   std::string filename_;
   std::string compiler_;  // This private member added by qianhao, which indicates the compiler used.
-=======
-    std::string code_;
-    LanguageType language_;
-    std::string address_;
-    std::string filename_;
->>>>>>> 78b5a5b7278d870b76271ee9b00c4773d82127e3
 
 public:
     /* constructors */
@@ -107,9 +100,7 @@ public:
 
     /* This function is to generate input for different platforms. */
     std::string generateInputCommand(std::string const& input);
-    /* Following two functions generate input command for specific platform */
-    std::string generateWindowsInputCommand(std::string const& input);
-    std::string generateUnixInputCommand(std::string const& input);
+
 
     // todo 3 Luo Wenxiang
     // /* if use cmake, HH's cmake is poor, Luo will write this */ 
