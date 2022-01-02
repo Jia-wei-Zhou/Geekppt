@@ -100,9 +100,7 @@ public:
 
     /* This function is to generate input for different platforms. */
     std::string generateInputCommand(std::string const& input);
-    /* Following two functions generate input command for specific platform */
-    std::string generateWindowsInputCommand(std::string const& input);
-    std::string generateUnixInputCommand(std::string const& input);
+
 
     // todo 3 Luo Wenxiang
     // /* if use cmake, HH's cmake is poor, Luo will write this */ 

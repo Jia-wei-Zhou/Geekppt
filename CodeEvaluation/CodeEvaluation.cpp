@@ -49,18 +49,9 @@ std::string CodeEvaluation::generateCompileCommand(std::string const& compiler) 
 
 
 std::string CodeEvaluation::generateInputCommand(std::string const& input) {
-    if (PLATFORM == WINDOWS) {
-        return generateWindowsInputCommand(input);
-    }
-    else if (PLATFORM == UNIX) {
-        return generateUnixInputCommand(input);
-    }
-}
-
-
-std::string CodeEvaluation::generateWindowsInputCommand(std::string const& input) {
     std::ofstream input_file;
     std::string input_filename = filename_ + "_input.txt";
+    // this shall be replaced by a sub-function (write to file) later
     input_file.open(input_filename, std::ios::out | std::ios::trunc);
     if (input_file.fail()) {
         throw std::runtime_error("Fail to create/open input.txt");
@@ -76,14 +67,10 @@ std::string CodeEvaluation::generateWindowsInputCommand(std::string const& input
 }
 
 
-std::string CodeEvaluation::generateUnixInputCommand(std::string const& input) {
-    return " < &" + input;
-}
-
 
 std::string CodeEvaluation::generateRunCommand(std::string const& filename, std::string const& input) {
-    std::string run_command = "./";
-    run_command += filename + (input.size() ? generateInputCommand(input) : ""); // Modified by Qianhao, added the execution symbol
+    std::string run_command = (PLATFORM == WINDOWS? "" : "./");
+    run_command += filename + (input.size() > 0 ? generateInputCommand(input) : "");
 
     return run_command;
 }
@@ -194,6 +181,7 @@ std::string CodeEvaluation::runCode(std::string const& address, std::string cons
         exit(1);
     }
 }
+
 std::string CodeEvaluation::readTxt(std::string const& address) const {
     std::ifstream input_file(address);
     if (!input_file.is_open()) {
