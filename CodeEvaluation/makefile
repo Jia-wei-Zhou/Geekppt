@@ -10,7 +10,7 @@ CodeEvaluation.o: CodeEvaluation.cpp CodeEvaluation.h
 	$(CC) -c CodeEvaluation.cpp 
 
 tidy: 
-	rm *.o
+	rm *.o *.txt
 
 clean: 
-	rm CodeEvaluation *.o
+	rm CodeEvaluation *.o *.txt
