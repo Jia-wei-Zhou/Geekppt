@@ -10,9 +10,6 @@ void CodeEvaluation::executeInCmdLine(std::string cmd) {
 }
 
 
-
-
-
 std::string CodeEvaluation::executeAndGetFromCmd(std::string cmd) {
     std::array<char, 128> buffer;
     std::string result;
@@ -27,12 +24,13 @@ std::string CodeEvaluation::executeAndGetFromCmd(std::string cmd) {
 }
 
 std::string CodeEvaluation::readTxt(std::string address) const {
-    std::ifstream ifile(address);
-    std::ostringstream buf;
-    char ch;
-    while (buf && ifile.get(ch))
-        buf.put(ch);
-    return buf.str();
+    std::ifstream input_file(address);
+    if (!input_file.is_open()) {
+        std::cerr << "Could not open the file - '"
+            << address << "'" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    return std::string((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
 }
 
 bool CodeEvaluation::createAndWriteFile() {
@@ -61,17 +59,4 @@ std::string CodeEvaluation::changeSuffix(LanguageType language) {
         address = address_.replace(address_.length() - 3, address_.length(), "py");
     }
     return address;
-}
-int main()
-{
-    std::string address = "cfileff.txt";
-    std::string str;
-    enum LanguageType m = PYTHON;
-
-    CodeEvaluation c = CodeEvaluation(m, address);
-    str = c.readTxt(address);
-    c.createAndWriteFile();
-    std::cout << str << std::endl;
-
-
 }
