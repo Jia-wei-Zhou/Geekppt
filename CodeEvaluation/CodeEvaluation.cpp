@@ -5,21 +5,29 @@
     i.e. preferred separator to distinquish between Unix and Windows.
     -- Jiawei Zhou  */
 std::string CodeEvaluation::extractFilename(std::string const& address) {
-    std::string filename = "";
-    for (auto it = address.begin(); it != address.end(); ++it) {
-        if (*it == '/' || *it == '\\') {
-            filename = "";
-        }
-        else {
-            filename.push_back(*it);
-        }
-    }
+    //std::string filename = "";
+    //for (auto it = address.begin(); it != address.end(); ++it) {
+    //    if (*it == '/' || *it == '\\') {
+    //        filename = "";
+    //    }
+    //    else {
+    //        filename.push_back(*it);
+    //    }
+    //}
 
-    if (find(filename.begin(), filename.end(), '.') != filename.end()) {
-        return filename.substr(0, find(filename.begin(), filename.end(), '.') - filename.begin());
-    }
-    filename_ = filename;
+    //if (find(filename.begin(), filename.end(), '.') != filename.end()) {
+    //    return filename.substr(0, find(filename.begin(), filename.end(), '.') - filename.begin());
+    //}
+    //filename_ = filename;
+    //return filename;
+    int separator_index = address.find_last_of(std::filesystem::path::preferred_separator);
+    separator_index = (separator_index == std::string::npos) ? 0 : separator_index + 1;
+
+    int dot_index = address.find_last_of('.');
+    std::string filename = address.substr(separator_index, dot_index - separator_index);
+
     return filename;
+
 }
 
 
@@ -51,7 +59,7 @@ std::string CodeEvaluation::generateCompileCommand(std::string const& compiler) 
 std::string CodeEvaluation::generateInputCommand(std::string const& input) {
     std::ofstream input_file;
     std::string input_filename = filename_ + "_input.txt";
-    // this shall be replaced by a sub-function (write to file) later
+    // TODO: this shall be replaced by a sub-function (write to file) later
     input_file.open(input_filename, std::ios::out | std::ios::trunc);
     if (input_file.fail()) {
         throw std::runtime_error("Fail to create/open input.txt");
@@ -76,7 +84,7 @@ std::string CodeEvaluation::generateRunCommand(std::string const& filename, std:
     return run_command;
 }
 
-
+// TODO
 void CodeEvaluation::generateCmakeFile(const std::string& project_name,
     const std::string& main_file,
     const std::string& output_cmake_path,
@@ -162,7 +170,7 @@ std::string CodeEvaluation::runCode(std::string const& input) {
     } 
     catch(std::runtime_error errors) {
         std::cerr << "Error message:" << errors.what() << '\n';
-        exit(1);
+        throw errors;
     }
 }
 
@@ -179,16 +187,14 @@ std::string CodeEvaluation::runCode(std::string const& address, std::string cons
     } 
     catch(std::runtime_error errors) {
         std::cerr << "Error message:" << errors.what() << '\n';
-        exit(1);
+        throw errors;
     }
 }
 
 std::string CodeEvaluation::readTxt(std::string const& address) const {
     std::ifstream input_file(address);
     if (!input_file.is_open()) {
-        std::cerr << "Could not open the file - '"
-            << address << "'" << std::endl;
-        exit(EXIT_FAILURE);
+        throw std::runtime_error("Error opening file");
     }
     return std::string((std::istreambuf_iterator<char>(input_file)), std::istreambuf_iterator<char>());
 }
@@ -207,6 +213,8 @@ std::string CodeEvaluation::createAndWriteFile() {
     ofs.close();
     return address;
 }
+
+
 std::string CodeEvaluation::changeSuffix(LanguageType language) {
     std::string address = "";
     if (language == CPP) {

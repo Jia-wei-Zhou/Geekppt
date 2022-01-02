@@ -63,5 +63,7 @@ int main() {
     std::string code_result_2 = myCode.runCode("sampleCode2.txt", "1234");
     std::cout << "Result for sampleCode2 is: " << code_result_2 << "\n\n";
 
+    int a;
+    std::cin >> a;
     return 0;
 }

@@ -68,7 +68,7 @@ public:
        e.g. ./home/Admin/lecture_related/source.txt -> source */
     std::string extractFilename(std::string const& address);
 
-    // todo 1 Zifan Wang
+
     /* read from a txt file and return its content as string
     */
     std::string readTxt(std::string const& address) const;
