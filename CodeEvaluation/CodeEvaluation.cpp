@@ -82,8 +82,8 @@ std::string CodeEvaluation::generateUnixInputCommand(std::string const& input) {
 
 
 std::string CodeEvaluation::generateRunCommand(std::string const& filename, std::string const& input) {
-    std::string run_command = "";
-    run_command = filename + generateInputCommand(input);
+    std::string run_command = "./";
+    run_command += filename + (input.size() ? generateInputCommand(input) : "");
 
     return run_command;
 }
@@ -96,9 +96,9 @@ void CodeEvaluation::generateCmakeFile(const std::string& project_name,
                                        const int cpp_standard,
                                        const std::string& cmake_mini_version) {
     // Determine if the validity of the output cmake lists
-    if(!output_cmake_path.ends_with("CMakeLists.txt")) {
+    /* if(!output_cmake_path.ends_with("CMakeLists.txt")) {
         throw std::runtime_error("Error in the path for output CMakeLists.txt");
-    }
+    }*/
 
     std::ofstream output(output_cmake_path);
     if(output.fail()) {
@@ -160,4 +160,35 @@ std::string CodeEvaluation::executeAndGetFromCmd(std::string cmd) {
         result += buffer.data();
     }
     return result;
+}
+
+
+std::string CodeEvaluation::runCode(std::string input) {
+    try {
+        changeSuffix(language_);
+        std::string compileCmd = generateCompileCommand(compiler_);
+        executeInCmdLine(compileCmd);
+        std::string runCmd = generateRunCommand(filename_, input);
+        return executeAndGetFromCmd(runCmd);
+    } 
+    catch(std::runtime_error errors) {
+        std::cerr << "Error message:" << errors.what() << '\n';
+        exit(1);
+    }
+}
+
+
+std::string CodeEvaluation::runCode(std::string address, std::string input) {
+    try {
+        address_ = address;
+        changeSuffix(language_);
+        std::string compileCmd = generateCompileCommand(compiler_);
+        executeInCmdLine(compileCmd);
+        std::string runCmd = generateRunCommand(filename_, input);
+        return executeAndGetFromCmd(runCmd);
+    } 
+    catch(std::runtime_error errors) {
+        std::cerr << "Error message:" << errors.what() << '\n';
+        exit(1);
+    }
 }

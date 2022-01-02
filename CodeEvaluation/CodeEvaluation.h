@@ -36,6 +36,7 @@ private:
   LanguageType language_ ;
   std::string address_;
   std::string filename_;
+  std::string compiler_;  // This private member added by qianhao, which indicates the compiler used.
 
 public:
     /* constructors */
@@ -43,8 +44,24 @@ public:
     language_(language), address_(address) {
         code_ = readTxt(address_);
         filename_ = extractFilename(address_);
+        // Default compiler
+        if (language == CPP) {
+            compiler_ = "g++";
+        }
+        else if (language == JAVA) {
+            compiler_ = "javac";
+        }
+        else {
+            compiler_ = ""; 
+        }
     }
-
+    
+    /* overloading constructors */
+    CodeEvaluation(LanguageType language, std::string const& address, std::string const& compiler): 
+    language_(language), address_(address), compiler_(compiler){
+        code_ = readTxt(address_);
+        filename_ = extractFilename(address_);
+    }
 
     /* helper func by HH, 
        extract from absolute address the filename without suffix
@@ -117,5 +134,4 @@ public:
        an overload function is needed for the user to specify the code to be run (addresss) */
     std::string runCode(std::string input);
     std::string runCode(std::string address, std::string input);
-
 };
