@@ -60,10 +60,11 @@ std::string CodeEvaluation::generateInputCommand(std::string const& input) {
     input_file << input;
 
     input_file.close();
-    if (input_file.good()) {
-        throw std::runtime_error("Fail to close input.txt");
-    }
-    return " < " + input_filename;
+    //if (input_file.good()) {
+    //    throw std::runtime_error("Fail to close input.txt");
+    //}
+    std::string input_command = " < " + input_filename;
+    return input_command;
 }
 
 
