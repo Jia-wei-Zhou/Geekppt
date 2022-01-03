@@ -1,6 +1,5 @@
 /* documentation of this class */
 
-
 #pragma once
 
 // macro defines to determine the platform
@@ -65,9 +64,11 @@ public:
         filename_ = extractFilename(address_);
     }
 
-    /* helper func by HH,
-       extract from absolute address the filename without suffix
-       e.g. ./home/Admin/lecture_related/source.txt -> source */
+    /**
+     * extract from absolute address the filename without suffix
+     * @param address the absolute address of file, e.g. "/homes/user/document/sampleCode.txt"
+     * @return the filename without suffix, e.g. "sampleCode"
+     */
     std::string extractFilename(std::string const& address);
 
 
@@ -87,16 +88,18 @@ public:
 
     std::string changeSuffix(LanguageType language);
 
-    // todo 2 Hao Huang
-
-    /* if not use cmake, generate compile command from a certain language and compiler
-    e.g. compiler = "g++" should return "g++ filename.cpp -o filename"
-    */
+    /**
+     * if not use cmake, generate compile cmd from a certain language and compiler
+     * @param compiler compiler name, e.g. "g++"
+     * @return the compiler command, e.g. "g++ sampleCode.cpp -o sampleCode"
+     */
     std::string generateCompileCommand(std::string const& compiler);
 
-    /* This is for unix env (defined by macro)
-    e.g. filename = "main", input = "ZhaiQianhao"
-    should generate "./main < &ZhaiQianhao"
+    /**
+     *  generate executable command
+     * @param filename executable filename, e.g. "test" or "text.exe"
+     * @param input command input args e.g. "1 2 3"
+     * @return a executable command, e.g. "text 1 2 3" 
      */
     std::string generateRunCommand(std::string const& filename, std::string const& input);
 
@@ -104,19 +107,14 @@ public:
     std::string generateInputCommand(std::string const& input);
 
 
-    // todo 3 Luo Wenxiang
-
-    //  if use cmake, HH's cmake is poor, Luo will write this */ 
     /**
      * Generate a CMake File
-     * 
      * @param project_name The name of the project
      * @param
      * @param libs The .cpp files
      * 
      * @return lwxnb 
-     */
-    // /* if use cmake, HH's cmake is poor, Luo will write this */ 
+     */ 
     static void generateCmakeFile(const std::string& project_name,
                                   const std::string& main_file,
                                   const std::string& output_cmake_path,
