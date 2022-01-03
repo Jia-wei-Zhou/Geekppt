@@ -42,7 +42,21 @@ int main() {
     std::cout << "----------------------- test 3 ---------------------------\n\n";
     std::cout << "\n\n\n";
 
-    // lwx ziji laixie
+    std::string project_name = "Chess";
+    std::filesystem::path main_file = "./users/ChessMain.cpp";
+    std::filesystem::path cmake_filename = "../CMakeLists.txt";
+    std::vector<std::filesystem::path> libs = {"./Bishop.cpp", "./Queen.cpp", "./Rook.cpp", "./King.cpp",
+                                               "./Pawn.cpp", "Knight.cpp"};
+
+    std::vector<std::string> preferred_libs;
+    std::for_each(libs.begin(), libs.end(),
+                  [&](auto&& path) { preferred_libs.push_back(path.make_preferred().string()); });
+
+    CodeEvaluation::generateCmakeFile(project_name, main_file.make_preferred(), cmake_filename.make_preferred(),
+                                      preferred_libs, 20, "3.10");
+
+    std::cout << "CMakeLists.txt has been generated, the path is ";
+    std::cout << std::quoted(absolute(cmake_filename).make_preferred().string()) << std::endl;
 
     /* ===================== test 4 - executeInCmdLine() and executeAndGetFromCmd() ======================*/
     std::cout << "----------------------- test 4 ---------------------------\n\n";

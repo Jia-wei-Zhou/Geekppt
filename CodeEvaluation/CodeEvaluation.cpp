@@ -84,7 +84,6 @@ std::string CodeEvaluation::generateRunCommand(std::string const& filename, std:
     return run_command;
 }
 
-// TODO
 void CodeEvaluation::generateCmakeFile(const std::string& project_name,
                                        const std::string& main_file,
                                        const std::string& output_cmake_path,
