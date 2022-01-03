@@ -1,7 +1,4 @@
 #include "CodeEvaluation.h"
-#include <fstream>
-#include <stdexcept>
-#include <filesystem>
 
 /*  Comment: this function can be used in function generateCmakeFile,
     whereas it is recommended to use the same method in generateCmakeFile
@@ -43,14 +40,14 @@ std::string CodeEvaluation::generateCompileCommand(std::string const& compiler) 
     compileCmd += extractFilename(address_);
 
     switch (language_) {
-    case JAVA:
-        compileCmd += ".java";
-        return compileCmd;
-    case CPP:
-        compileCmd += ".cpp";
-        break;
-    default:
-        break;
+        case JAVA:
+            compileCmd += ".java";
+            return compileCmd;
+        case CPP:
+            compileCmd += ".cpp";
+            break;
+        default:
+            break;
     }
 
     compileCmd += " -o ";
@@ -89,11 +86,11 @@ std::string CodeEvaluation::generateRunCommand(std::string const& filename, std:
 
 
 void CodeEvaluation::generateCmakeFile(const std::string& project_name,
-    const std::string& main_file,
-    const std::string& output_cmake_path,
-    std::vector<std::string>& libs,
-    const int cpp_standard,
-    const std::string& cmake_mini_version) {
+                                       const std::string& main_file,
+                                       const std::string& output_cmake_path,
+                                       std::vector<std::string>& libs,
+                                       const int cpp_standard,
+                                       const std::string& cmake_mini_version) {
     // Determine if the validity of the output cmake lists
     if (!output_cmake_path.ends_with("CMakeLists.txt")) {
         throw std::runtime_error("Error in the path for output CMakeLists.txt");
@@ -146,7 +143,6 @@ void CodeEvaluation::executeInCmdLine(std::string const& cmd) {
 }
 
 
-
 std::string CodeEvaluation::executeAndGetFromCmd(std::string const& cmd) {
     // defend empty compile cmd (e.g. language_ is PYTHON)
     if (cmd.length() == 0) { return ""; }
@@ -162,6 +158,7 @@ std::string CodeEvaluation::executeAndGetFromCmd(std::string const& cmd) {
     return result;
 }
 
+
 std::string CodeEvaluation::runCode(std::string const& input) {
     try {
         filename_ = extractFilename(address_);
@@ -170,7 +167,7 @@ std::string CodeEvaluation::runCode(std::string const& input) {
         executeInCmdLine(compileCmd);
         std::string runCmd = generateRunCommand(filename_, input);
         return executeAndGetFromCmd(runCmd);
-    } 
+    }
     catch(std::runtime_error errors) {
         std::cerr << "Error message:" << errors.what() << '\n';
         throw errors;
@@ -187,7 +184,7 @@ std::string CodeEvaluation::runCode(std::string const& address, std::string cons
         executeInCmdLine(compileCmd);
         std::string runCmd = generateRunCommand(filename_, input);
         return executeAndGetFromCmd(runCmd);
-    } 
+    }
     catch(std::runtime_error errors) {
         std::cerr << "Error message:" << errors.what() << '\n';
         throw errors;

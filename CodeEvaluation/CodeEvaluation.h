@@ -106,23 +106,21 @@ public:
     /* This function is to generate input for different platforms. */
     std::string generateInputCommand(std::string const& input);
 
-
     /**
-     * Generate a CMake File
-     * @param project_name The name of the project
-     * @param
-     * @param libs The .cpp files
-     * 
-     * @return lwxnb 
-     */ 
+    * Use to generate the CMakeLists for C++ projects
+    * @param project_name The project name
+    * @param main_file The filename of the file that contains main function
+    * @param output_cmake_path The output cmake filename and path
+    * @param libs The filenames of C++ libraries
+    * @param cpp_standard The standard of C++
+    * @param cmake_mini_version The minimum version of the cmake for building the project
+    */
     static void generateCmakeFile(const std::string& project_name,
                                   const std::string& main_file,
                                   const std::string& output_cmake_path,
                                   std::vector<std::string>& libs,
                                   const int cpp_standard = 20,
                                   const std::string& cmake_mini_version = "3.20");
-    
-
 
     /* done!
        execute certain command in command line */
