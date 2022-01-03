@@ -25,7 +25,6 @@
 #include <filesystem>
 #include <algorithm>
 
-
 enum LanguageType {
     CPP,
     JAVA,
@@ -106,6 +105,7 @@ public:
 
 
     // todo 3 Luo Wenxiang
+
     //  if use cmake, HH's cmake is poor, Luo will write this */ 
     /**
      * Generate a CMake File
@@ -116,12 +116,14 @@ public:
      * 
      * @return lwxnb 
      */
+    // /* if use cmake, HH's cmake is poor, Luo will write this */ 
     static void generateCmakeFile(const std::string& project_name,
                                   const std::string& main_file,
                                   const std::string& output_cmake_path,
                                   std::vector<std::string>& libs,
                                   const int cpp_standard = 20,
                                   const std::string& cmake_mini_version = "3.20");
+    
 
 
     /* done!
