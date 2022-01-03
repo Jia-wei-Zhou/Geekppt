@@ -52,7 +52,8 @@ int main() {
     std::for_each(libs.begin(), libs.end(),
                   [&](auto&& path) { preferred_libs.push_back(path.make_preferred().string()); });
 
-    CodeEvaluation::generateCmakeFile(project_name, main_file.make_preferred(), cmake_filename.make_preferred(),
+    CodeEvaluation::generateCmakeFile(project_name, main_file.make_preferred().string(), 
+                                      cmake_filename.make_preferred().string(),
                                       preferred_libs, 20, "3.10");
 
     std::cout << "CMakeLists.txt has been generated, the path is ";
