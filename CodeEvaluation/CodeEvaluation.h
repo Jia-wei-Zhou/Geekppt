@@ -137,11 +137,18 @@ public:
     // gets
     std::string get_filename() { return filename_; }
 
-
-    // todo 4 Qianhao Zhai
-    /* use the above methods
-       accept input and return output
-       an overload function is needed for the user to specify the code to be run (addresss) */
+    /**
+    * run the code of the current address path(ps. saved in private data member "address_")
+    * @param input The content of the standard input stream used in the code(can be empty "")
+    * @return The result of the code running
+    */
     std::string runCode(std::string const& input);
+
+    /**
+    * run the code of the specified address path
+    * @param address The specified address(btw, this address is copied to the private data member "address_")
+    * @param input The content of the standard input stream used in the code(can be empty "")
+    * @return The result of the code running
+    */
     std::string runCode(std::string const& address, std::string const& input);
 };
