@@ -79,7 +79,7 @@ public:
      *
      * @return string which store the content of the input txt file
     */
-    std::string readTxt(std::string address) const;
+    std::string readTxt(std::string const& address) const;
 
     /**
     * create a file with a certain language type suffix
