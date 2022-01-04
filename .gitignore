@@ -132,6 +132,7 @@ x86/
 # CMake ================================
 bin/
 build/
+Build/
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
@@ -146,3 +147,4 @@ CTestTestfile.cmake
 
 # User ================================
 # define your ignore file here
+output/

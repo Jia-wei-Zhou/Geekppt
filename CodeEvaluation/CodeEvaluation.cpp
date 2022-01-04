@@ -58,7 +58,9 @@ std::string CodeEvaluation::generateCompileCommand(std::string const& compiler) 
 
 std::string CodeEvaluation::generateInputCommand(std::string const& input) {
     std::ofstream input_file;
-    std::string input_filename = filename_ + "_input.txt";
+    std::system("mkdir output");
+    std::filesystem::path path = "output/" + filename_ + "_input.txt";
+    std::string input_filename = path.make_preferred().string();
     // TODO: this shall be replaced by a sub-function (write to file) later
     input_file.open(input_filename, std::ios::out | std::ios::trunc);
     if (input_file.fail()) {

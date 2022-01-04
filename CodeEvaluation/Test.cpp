@@ -40,7 +40,6 @@ int main() {
 
     /* ========================== test 3 - generateCmakeFile() ================================ */
     std::cout << "----------------------- test 3 ---------------------------\n\n";
-    std::cout << "\n\n\n";
 
     std::string project_name = "Chess";
     std::filesystem::path main_file = "./users/ChessMain.cpp";
@@ -59,11 +58,13 @@ int main() {
     std::cout << "CMakeLists.txt has been generated, the path is ";
     std::cout << std::quoted(absolute(cmake_filename).make_preferred().string()) << std::endl;
 
+    std::cout << "\n\n\n";
+
     /* ===================== test 4 - executeInCmdLine() and executeAndGetFromCmd() ======================*/
     std::cout << "----------------------- test 4 ---------------------------\n\n";
 
     myCode.executeInCmdLine("mkdir input"); // this should create a folder 'input'
-    std::string result = myCode.executeAndGetFromCmd("dir");
+    std::string result = myCode.executeAndGetFromCmd((PLATFORM == WINDOWS ? "dir" : "ls"));
     std::cout << "Result for command 'dir' is: \n\n" << result;
 
     std::cout << "\n\n\n";
