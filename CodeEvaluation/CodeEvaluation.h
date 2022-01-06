@@ -1,4 +1,14 @@
-/* documentation of this class */
+/**
+ * @file CodeEvaluation.h
+ * @author Team Cadenza
+ * @brief CodeEvaluation contains a class that can compile 
+ *        and run code automatically and return its output
+ * @version 0.1
+ * @date 2022-01-06
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
 
 #pragma once
 
@@ -40,7 +50,12 @@ private:
   std::string compiler_;
 
 public:
-    /* constructors */
+    /**
+     * @brief Construct a new Code Evaluation object
+     * 
+     * @param language The language to be used
+     * @param address The address of source file, which is the code to be run
+     */
     CodeEvaluation(LanguageType language, std::string const& address) :
         language_(language), address_(address) {
         code_ = readTxt(address_);
@@ -57,7 +72,13 @@ public:
         }
     }
     
-    /* overloading constructors */
+    /**
+     * @brief Construct a new Code Evaluation object
+     * 
+     * @param language The language to be used
+     * @param address The address of source file, which is the code to be run
+     * @param compiler The compiler to be used
+     */
     CodeEvaluation(LanguageType language, std::string const& address, std::string const& compiler): 
     language_(language), address_(address), compiler_(compiler){
         code_ = readTxt(address_);
@@ -122,11 +143,19 @@ public:
                                   const int cpp_standard = 20,
                                   const std::string& cmake_mini_version = "3.20");
 
-    /* done!
-       execute certain command in command line */
+    /**
+     * @brief This function is used to execute a command in command line
+     * 
+     * @param cmd The command that will be executed
+     */
     void executeInCmdLine(std::string const& cmd);
 
-    /* already finished by Zhou */
+    /**
+     * @brief This function executes a command in command line and read the content in command line
+     * 
+     * @param cmd The command that will be executed
+     * @return std::string The result of the command (output)
+     */
     std::string executeAndGetFromCmd(std::string const& cmd);
 
 
