@@ -93,22 +93,31 @@ public:
     std::string extractFilename(std::string const& address);
 
 
-    /* read from a txt file and return its content as string
+     /**
+     * used to read TXT format file and store the information in string
+     *
+     * @param file address
+     *
+     * @return string which store the content of the input txt file
     */
     std::string readTxt(std::string const& address) const;
 
-    /* create a file with a certain language type suffix
-       and write code_ inside the file
-       e.g. address_ filename is 1.txt, language_ is CPP
-       should write to 1.cpp file in the same directory
-       return the filename of the file */
+    /**
+    * create a file with a certain language type suffix
+      and write code_ inside the file
+    *
+    * @return the filename of the file
+    */
     std::string createAndWriteFile();
 
-
-    /* change suffix .txt to certain type and return filename */
-
+    /**
+    * used to change the suffix of the given file which in txt format
+    *
+    * @param the wanted language such as python and java
+    *
+    * @return the filename of the file
+    */
     std::string changeSuffix(LanguageType language);
-
     /**
      * if not use cmake, generate compile cmd from a certain language and compiler
      * @param compiler compiler name, e.g. "g++"
@@ -166,11 +175,18 @@ public:
     // gets
     std::string get_filename() { return filename_; }
 
-
-    // todo 4 Qianhao Zhai
-    /* use the above methods
-       accept input and return output
-       an overload function is needed for the user to specify the code to be run (addresss) */
+    /**
+    * run the code of the current address path(ps. saved in private data member "address_")
+    * @param input The content of the standard input stream used in the code(can be empty "")
+    * @return The result of the code running
+    */
     std::string runCode(std::string const& input);
+
+    /**
+    * run the code of the specified address path
+    * @param address The specified address(btw, this address is copied to the private data member "address_")
+    * @param input The content of the standard input stream used in the code(can be empty "")
+    * @return The result of the code running
+    */
     std::string runCode(std::string const& address, std::string const& input);
 };

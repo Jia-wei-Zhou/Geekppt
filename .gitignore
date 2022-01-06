@@ -1,4 +1,4 @@
-﻿# This .gitignore file is based on an example from https://blog.csdn.net/a435262767/article/details/93972377
+# This .gitignore file is based on an example from https://blog.csdn.net/a435262767/article/details/93972377
 # .dll file has been removed from this list as it will be used in further development. It can be added again when all tests are finished
 
 # PLEASE ONLY ADD THINGS BUT NOT REPLACE THIS FILE!!!!
@@ -148,3 +148,4 @@ CTestTestfile.cmake
 # User ================================
 # define your ignore file here
 output/
+.DS_Store
