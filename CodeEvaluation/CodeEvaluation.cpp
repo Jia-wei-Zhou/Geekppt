@@ -1,25 +1,6 @@
 #include "CodeEvaluation.h"
 
-/*  Comment: this function can be used in function generateCmakeFile,
-    whereas it is recommended to use the same method in generateCmakeFile
-    i.e. preferred separator to distinquish between Unix and Windows.
-    -- Jiawei Zhou  */
 std::string CodeEvaluation::extractFilename(std::string const& address) {
-    //std::string filename = "";
-    //for (auto it = address.begin(); it != address.end(); ++it) {
-    //    if (*it == '/' || *it == '\\') {
-    //        filename = "";
-    //    }
-    //    else {
-    //        filename.push_back(*it);
-    //    }
-    //}
-
-    //if (find(filename.begin(), filename.end(), '.') != filename.end()) {
-    //    return filename.substr(0, find(filename.begin(), filename.end(), '.') - filename.begin());
-    //}
-    //filename_ = filename;
-    //return filename;
     int separator_index = address.find_last_of(std::filesystem::path::preferred_separator);
     separator_index = (separator_index == std::string::npos) ? 0 : separator_index + 1;
 
@@ -70,9 +51,7 @@ std::string CodeEvaluation::generateInputCommand(std::string const& input) {
     input_file << input;
 
     input_file.close();
-    //if (input_file.good()) {
-    //    throw std::runtime_error("Fail to close input.txt");
-    //}
+
     std::string input_command = " < " + input_filename;
     return input_command;
 }
@@ -110,8 +89,7 @@ void CodeEvaluation::generateCmakeFile(const std::string& project_name,
 
     std::vector<std::string> lib_names;
     for (auto&& lib : libs) {
-        /*  Comment: this part can be extracted and replaced
-            with a separate function in the future -- Jiawei Zhou*/
+        // TODO - should be replaced by extractFile()
         int separator_index = lib.find_last_of(std::filesystem::path::preferred_separator);
         separator_index = (separator_index == std::string::npos) ? 0 : separator_index + 1;
 
@@ -134,7 +112,7 @@ void CodeEvaluation::generateCmakeFile(const std::string& project_name,
 
 
 void CodeEvaluation::executeInCmdLine(std::string const& cmd) {
-    // defend empty compile cmd (e.g. language_ is PYTHON)
+    // defend empty compile cmd
     if (cmd.length() == 0) { return; }
     std::array<char, 128> buffer;
     std::string result;
@@ -146,7 +124,7 @@ void CodeEvaluation::executeInCmdLine(std::string const& cmd) {
 
 
 std::string CodeEvaluation::executeAndGetFromCmd(std::string const& cmd) {
-    // defend empty compile cmd (e.g. language_ is PYTHON)
+    // defend empty compile cmd
     if (cmd.length() == 0) { return ""; }
     std::array<char, 128> buffer;
     std::string result;
