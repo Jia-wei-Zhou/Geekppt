@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
 
 namespace CodeEvaluation
-{
-    enum BoxContent { Code, Input, Output };
-
+{    
     partial class Auxiliary
-    {
-        private static int boxID = 0;
+    {        
         private static List<string> colors = new List<string>();
         private const int MINIMUM_COLOR_DIFFERENCE = 100;
         

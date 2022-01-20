@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace CodeEvaluation
 {
+    enum BoxContent { Code, Input, Output };
+
     partial class Auxiliary
     {
+        public const string tempFolder = "temp_PPT_add_in";        
+        private static int boxID = 0;
+        private static int seed = 0; // avoid pseudorandom number
+
         /// <summary>
         /// Generate text box name
         /// </summary>
@@ -86,11 +92,25 @@ namespace CodeEvaluation
         /// <returns></returns>
         public static string GenerateFilename(Language type, bool isMain, int id)
         {
+            if(type == Language.CPP)
+            {
+                return GenerateRandomName() + ".txt";
+            }
+
             string filename = (type == Language.CPP) ? "cpp" : type.ToString().ToLower();
             filename += isMain ? "_main_" : "_lib_";
             filename += id;
             filename += ".txt";
             return filename;
+        }
+
+        public static string GenerateRandomName()
+        {          
+            Random rand = new Random(seed++);
+            string result = rand.Next(1000000).ToString("X") + "_";
+            result += rand.Next(100000).ToString("x") + "_";
+            result += rand.Next(10000).ToString("X");
+            return result;
         }
     }
 }

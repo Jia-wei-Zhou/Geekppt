@@ -34,13 +34,13 @@ namespace CodeEvaluation
         private void evaluateButton_Click(object sender, RibbonControlEventArgs e)
         {
             // create a new folder for the selected code
-            string path = CodeEvaluation.CreateFolder(Directory.GetCurrentDirectory(), "temp_PPT_add_in");
+            string path = Auxiliary.CreateFolder("temp_PPT_add_in", Directory.GetCurrentDirectory(), true);            
             // obtain current slide
             PowerPoint.Slide slide = (PowerPoint.Slide)Globals.ThisAddIn.Application.ActiveWindow.View.Slide;
             List<PowerPoint.Shape> shapes = new List<PowerPoint.Shape>();
             string color = Auxiliary.GenerateColor();
             string result = "";
-
+            
             try
             {
                 // obtain all the selected textboxes   
@@ -55,20 +55,14 @@ namespace CodeEvaluation
                     }
                 }
 
-                Auxiliary.GenerateTextFileAndInputs(codes, path, out var files, out var inputs);
-                foreach (string file in files.Keys)
-                {
-                    if (Auxiliary.RunCode(files[file], file, inputs, out var runRes))
-                    {
-                        AddTextBox(slide, "Arial", 18, color, runRes);
-                    }
-                    else
-                    {
-                        AddTextBox(slide, "Arial", 18, color, "Error when runnning the code");
-                    }                    
-                }               
-                
-                foreach(var shape in shapes)
+                Auxiliary.GenerateTextFileAndInputs(codes, path, out var files, out var main, out var inputs);
+                CodeEvaluationCpp evaluate = new CodeEvaluationCpp(main, files);
+                evaluate.CreateSourceFile();
+                evaluate.GenerateCmakeLists();
+                evaluate.RunCode(out var res, "", inputs);
+                AddTextBox(slide, "Arial", 18, color, res);               
+
+                foreach (var shape in shapes)
                 {
                     shape.TextFrame.TextRange.Font.Color.RGB = Int32.Parse(color, System.Globalization.NumberStyles.HexNumber);
                 }
