@@ -1,19 +1,22 @@
-﻿using System;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
+using CodeEvaluation;
+
 
 namespace CodeEvaluation
 {
     enum Language { CPP, Java, Python, Invalid };
-    
+
     partial class Auxiliary
     {
         public static string GenerateTextFile(string path, string code, Language type, bool isMain, int id)
-        {                      
+        {
             string filename = path + Path.DirectorySeparatorChar + GenerateFilename(type, isMain, id);
             File.WriteAllText(filename, code);
 
@@ -33,14 +36,14 @@ namespace CodeEvaluation
             address = new List<string>();
             inputs = "";
             main = "Invalid";
-            foreach(string key in codes.Keys)
+            foreach (string key in codes.Keys)
             {
                 ExtractCodeBoxInfo(key, out Language type, out bool isMain, out BoxContent content, out int id);
-                if(content == BoxContent.Code && !isMain)
+                if (content == BoxContent.Code && !isMain)
                 {
                     address.Add(GenerateTextFile(path, codes[key], type, false, id));
                 }
-                else if(content == BoxContent.Code && isMain)
+                else if (content == BoxContent.Code && isMain)
                 {
                     main = GenerateTextFile(path, codes[key], type, true, id);
                 }
@@ -50,6 +53,8 @@ namespace CodeEvaluation
                 }
             }
         }
+
+
 
         /// <summary>
         /// Create a new folder
@@ -85,6 +90,18 @@ namespace CodeEvaluation
             }
 
             return newDir;
+        }
+
+        public static List<string> GenerateInputList(string input)
+        {
+            List<string> commands = new List<string>();
+            string[] lines = input.Split('\n');
+            foreach (var line in lines)
+            {
+                commands.Add(line);
+            }
+
+            return commands;
         }
 
         /// <summary>
@@ -125,12 +142,194 @@ namespace CodeEvaluation
 
             return result;
         }
+
+        public static String abstractResult(String output, String address_folder)
+        {
+            String executeLine = address_folder + ">java";
+            int executeLinePos = output.IndexOf(executeLine);
+            int startPos = executeLinePos + executeLine.Length + 1;
+            startPos = output.IndexOf('\n', startPos);
+            startPos++;
+            int endPos = output.IndexOf(address_folder, startPos);
+            String result = output.Substring(startPos, endPos - startPos - 4);//
+            return result;
+        }
+
+        public static string RunProgramJava(string executable, string address_folder, string args = null, List<string> inputs = null)
+        {
+            string result = null;
+            var process = new Process()
+            {
+                StartInfo = new ProcessStartInfo()
+                {
+                    CreateNoWindow = true,
+                    FileName = "cmd.exe",
+                    UseShellExecute = false,
+                    RedirectStandardError = true,
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
+
+                }
+            };
+
+            process.Start();
+            process.StandardInput.WriteLine("cd " + address_folder);
+            process.StandardInput.WriteLine(executable + " " + args);
+            if (inputs != null)
+            {
+                foreach (var cmd in inputs)
+                {
+                    process.StandardInput.WriteLine(cmd);
+                }
+            }
+            process.StandardInput.WriteLine("exit");
+            result = process.StandardOutput.ReadToEnd();
+            process.Close();
+            result = abstractResult(result, address_folder);
+            return result;
+        }
+
     }
 
     public interface ICodeEvaluation
     {
         void CreateSourceFile();
         bool RunCode(out string result, string cmdArgs = "", string inputs = "");
+    }
+
+    public class CodeEvaluationJava : ICodeEvaluation
+    {
+        private List<string> textAddress;
+        private List<string> libs;
+        private string mainFile;
+        private const Language TYPE = Language.Java;
+
+        public List<string> TextAddress
+        {
+            get => libs;
+        }
+
+        public string MainFile
+        {
+            get => mainFile;
+        }
+
+        public CodeEvaluationJava(string mainFile, List<string> textAddress)
+        {
+            libs = new List<string>();
+            this.textAddress = textAddress;
+            this.mainFile = mainFile;
+        }
+
+        public String GetClassName(String fileName)
+        {
+            System.IO.StreamReader file = new System.IO.StreamReader(fileName);
+            String targetLine = file.ReadLine();
+            String className = "";
+            while (targetLine != null)
+            {
+                int pos = targetLine.IndexOf("class");
+                if (pos != -1)
+                {
+                    int classNameLength = 0;
+                    pos += 5; // skip "class" and look for the class name.
+
+                    if (pos > targetLine.Length - 1)
+                    {
+                        throw (new IndexOutOfRangeException("Class name and identifier \"class \"are not on the same line"));
+                    }
+
+                    while (!Char.IsLetter(targetLine[pos]) && (pos + 1 <= targetLine.Length - 1))
+                    {
+                        pos++;
+                    }
+
+                    int startPos = pos;
+
+                    if (pos == targetLine.Length - 1)
+                    {
+                        throw (new IndexOutOfRangeException("Class name and identifier \"class \"are not on the same line"));
+                    }
+
+                    while (Char.IsLetter(targetLine[pos]) && (pos + 1 <= targetLine.Length - 1))
+                    {
+                        pos++;
+                        classNameLength++;
+                    }
+
+                    className = targetLine.Substring(startPos, classNameLength);
+                }
+                if (className != "")
+                {
+                    break;
+                }
+                targetLine = file.ReadLine();
+            }
+            file.Close();
+            return className;
+        }
+
+        public void CreateSourceFile()
+        {
+            foreach (var address in textAddress)
+            {
+                string filename = mainFile.Substring(0, mainFile.LastIndexOf('\\')) + "\\" + GetClassName(address) + ".java";
+                string content = File.ReadAllText(address);
+                File.WriteAllText(filename, content);
+                libs.Add(filename);
+            }
+
+            string sourceMain = mainFile;
+            string filename_main = mainFile.Substring(0, mainFile.LastIndexOf('\\')) + "\\" + GetClassName(mainFile) + ".java";
+            string content_main = File.ReadAllText(sourceMain);
+            File.WriteAllText(filename_main, content_main);
+            this.mainFile = filename_main;
+
+        }
+
+
+        public bool RunCode(out string result, string cmdArgs = "", string inputs = "")
+        {
+            CodeEvaluationJava evaluate = new CodeEvaluationJava(mainFile, textAddress);
+            evaluate.CreateSourceFile();
+            cmdArgs = mainFile;
+            foreach (var address in libs)
+            {
+                cmdArgs += " " + address;
+            }
+
+            Auxiliary.RunProgram("javac", cmdArgs, inputs);
+
+            
+            //todo
+            String fileName = GetClassName(mainFile);
+
+            if (fileName == "")
+            {
+                throw (new NullReferenceException("class name not found"));
+            }
+
+            foreach (var address in libs)
+            {
+                String fileName_libs = GetClassName(address);
+                if (fileName_libs == "")
+                {
+                    throw (new NullReferenceException("class name not found"));
+                }
+                fileName += " " + fileName_libs;
+            }
+
+            string address_folder = mainFile.Substring(0, mainFile.LastIndexOf('.'));
+            //address of folder
+            address_folder = address_folder.Substring(0, address_folder.LastIndexOf('\\'));
+            var data = Auxiliary.GenerateInputList(inputs);
+            string executable = "java";
+
+            result = Auxiliary.RunProgramJava(executable, address_folder, fileName, data);
+            return true;
+        }
+
+
     }
 
     public class CodeEvaluationCpp : ICodeEvaluation
@@ -231,7 +430,7 @@ namespace CodeEvaluation
 
         public bool RunCode(out string result, string cmdArgs = "", string inputs = "")
         {
-            string buildDir = CompileCode(out string init, out string build);            
+            string buildDir = CompileCode(out string init, out string build);
 
             string current = Directory.GetCurrentDirectory();
             Directory.SetCurrentDirectory(buildDir);
@@ -253,6 +452,109 @@ namespace CodeEvaluation
 
             Directory.SetCurrentDirectory(current);
             return buildDir;
+        }
+    }
+
+    public class CodeEvaluationPython : ICodeEvaluation
+    {
+        private List<string> textAddress;
+        private List<string> libs;
+        private string mainFile;
+        private const Language TYPE = Language.Python;
+        private readonly string OS_NAME;
+        private readonly string CODE_FOLDER;
+
+        public List<string> TextAddress
+        {
+            get => libs;
+        }
+
+        public string MainFile
+        {
+            get => mainFile;
+        }
+
+        public string OSName
+        {
+            get => OS_NAME;
+        }
+
+        public string CodeFolder
+        {
+            get => CODE_FOLDER;
+        }
+
+
+
+        public CodeEvaluationPython(string mainFile, List<string> textAddress)
+        {
+            OS_NAME = Environment.OSVersion.Platform.ToString();
+            CODE_FOLDER = Auxiliary.CreateFolder(Auxiliary.GenerateRandomName(), Auxiliary.tempFolder, true);
+            libs = new List<string>();
+            this.textAddress = textAddress;
+            this.mainFile = mainFile;
+        }
+
+        /// <summary>
+        /// get local python executable file
+        /// </summary>
+        /// <returns></returns>
+        public static string GetPythonPath()
+        {
+            IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+            string pathVariable = environmentVariables["Path"] as string;
+            if (pathVariable != null)
+            {
+                string[] allPaths = pathVariable.Split(';');
+                foreach (var path in allPaths)
+                {
+                    string pythonPathFromEnv = path + "\\python.exe";
+                    if (File.Exists(pythonPathFromEnv))
+                        return pythonPathFromEnv;
+                }
+            }
+            return null;
+        }
+
+        public void CreateSourceFile()
+        {
+            foreach (var address in textAddress)
+            {
+                string filename = CodeFolder + Path.DirectorySeparatorChar + Auxiliary.GenerateRandomName() + ".py";
+                string content = File.ReadAllText(address);
+                File.WriteAllText(filename, content);
+                libs.Add(filename);
+            }
+
+            string sourceMain = CodeFolder + Path.DirectorySeparatorChar + "main.py";
+            {
+                foreach (var address in TextAddress)
+                {
+                    // write main func, but import other .py file
+                    string content = File.ReadAllText(address) + "\n";
+                    string[] module = Path.GetFileName(address).Split('.');
+                    string import = String.Format($"from {module[0]} import *\n");
+                    if (content.Contains("__main__"))
+                    {
+                        File.AppendAllText(sourceMain, content);
+                    }
+                    else
+                    {
+                        File.AppendAllText(sourceMain, import);
+                    }
+
+                }
+            }
+            mainFile = sourceMain;
+        }
+
+        public bool RunCode(out string result, string cmdArgs = "", string inputs = "")
+        {
+            string executable = GetPythonPath();
+            cmdArgs = mainFile + cmdArgs;
+            result = Auxiliary.RunProgram(executable, cmdArgs, inputs);
+
+            return true;
         }
     }
 }
