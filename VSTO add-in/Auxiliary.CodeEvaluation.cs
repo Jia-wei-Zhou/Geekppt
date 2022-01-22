@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -253,6 +254,109 @@ namespace CodeEvaluation
 
             Directory.SetCurrentDirectory(current);
             return buildDir;
+        }
+    }
+
+    public class CodeEvaluationPython : ICodeEvaluation
+    {
+        private List<string> textAddress;
+        private List<string> libs;
+        private string mainFile;
+        private const Language TYPE = Language.Python;
+        private readonly string OS_NAME;
+        private readonly string CODE_FOLDER;
+
+        public List<string> TextAddress
+        {
+            get => libs;
+        }
+
+        public string MainFile
+        {
+            get => mainFile;
+        }
+
+        public string OSName
+        {
+            get => OS_NAME;
+        }
+
+        public string CodeFolder
+        {
+            get => CODE_FOLDER;
+        }
+
+
+        
+        public CodeEvaluationPython(string mainFile, List<string> textAddress)
+        {
+            OS_NAME = Environment.OSVersion.Platform.ToString();
+            CODE_FOLDER = Auxiliary.CreateFolder(Auxiliary.GenerateRandomName(), Auxiliary.tempFolder, true);
+            libs = new List<string>();
+            this.textAddress = textAddress;
+            this.mainFile = mainFile;
+        }
+
+        /// <summary>
+        /// get local python executable file
+        /// </summary>
+        /// <returns></returns>
+        public static string GetPythonPath()
+        {
+            IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+            string pathVariable = environmentVariables["Path"] as string;
+            if (pathVariable != null)
+            {
+                string[] allPaths = pathVariable.Split(';');
+                foreach (var path in allPaths)
+                {
+                    string pythonPathFromEnv = path + "\\python.exe";
+                    if (File.Exists(pythonPathFromEnv))
+                        return pythonPathFromEnv;
+                }
+            }
+            return null;
+        }
+
+        public void CreateSourceFile()
+        {
+            foreach (var address in textAddress)
+            {
+                string filename = CodeFolder + Path.DirectorySeparatorChar + Auxiliary.GenerateRandomName() + ".py";
+                string content = File.ReadAllText(address);
+                File.WriteAllText(filename, content);
+                libs.Add(filename);
+            }
+
+            string sourceMain = CodeFolder + Path.DirectorySeparatorChar + "main.py";
+            {
+                foreach (var address in TextAddress)
+                {
+                    // write main func, but import other .py file
+                    string content = File.ReadAllText(address) + "\n";
+                    string[] module = Path.GetFileName(address).Split('.');
+                    string import = String.Format($"from {module[0]} import *\n");
+                    if (content.Contains("__main__"))
+                    {
+                        File.AppendAllText(sourceMain, content);
+                    }
+                    else 
+                    {
+                        File.AppendAllText(sourceMain, import);
+                    }
+                    
+                }
+            }
+            mainFile = sourceMain;
+        }
+
+        public bool RunCode(out string result, string cmdArgs = "", string inputs = "")
+        {
+            string executable = GetPythonPath();
+            cmdArgs = mainFile + cmdArgs;
+            result = Auxiliary.RunProgram(executable, cmdArgs, inputs);
+
+            return true;
         }
     }
 }
