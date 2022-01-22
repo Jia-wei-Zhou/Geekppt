@@ -107,7 +107,8 @@ namespace CodeEvaluation
         public static string GenerateRandomName()
         {          
             Random rand = new Random(seed++);
-            string result = rand.Next(1000000).ToString("X") + "_";
+            // python does not allow import package beginning with number
+            string result = "file" + rand.Next(1000000).ToString("X") + "_";
             result += rand.Next(100000).ToString("x") + "_";
             result += rand.Next(10000).ToString("X");
             return result;

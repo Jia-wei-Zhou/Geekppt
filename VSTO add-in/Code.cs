@@ -56,9 +56,11 @@ namespace CodeEvaluation
                 }
 
                 Auxiliary.GenerateTextFileAndInputs(codes, path, out var files, out var main, out var inputs);
-                CodeEvaluationCpp evaluate = new CodeEvaluationCpp(main, files);
+                // Test case, feel free to change. 
+                CodeEvaluationPython evaluate = new CodeEvaluationPython(main, files);
                 evaluate.CreateSourceFile();
-                evaluate.GenerateCmakeLists();
+                // python does not need cmake
+                // evaluate.GenerateCmakeLists();
                 evaluate.RunCode(out var res, "", inputs);
                 AddTextBox(slide, "Arial", 18, color, res);               
 

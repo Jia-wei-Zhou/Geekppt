@@ -485,7 +485,6 @@ namespace CodeEvaluation
         }
 
 
-
         public CodeEvaluationPython(string mainFile, List<string> textAddress)
         {
             OS_NAME = Environment.OSVersion.Platform.ToString();
@@ -534,6 +533,7 @@ namespace CodeEvaluation
                     string content = File.ReadAllText(address) + "\n";
                     string[] module = Path.GetFileName(address).Split('.');
                     string import = String.Format($"from {module[0]} import *\n");
+
                     if (content.Contains("__main__"))
                     {
                         File.AppendAllText(sourceMain, content);
@@ -541,6 +541,15 @@ namespace CodeEvaluation
                     else
                     {
                         File.AppendAllText(sourceMain, import);
+                        if (File.Exists(sourceMain))
+                        {
+                            var currentContent = File.ReadAllText(sourceMain);
+                            File.WriteAllText(sourceMain, import + currentContent);
+                        }
+                        else
+                        {
+                            File.AppendAllText(sourceMain, import);
+                        }
                     }
 
                 }
@@ -558,3 +567,4 @@ namespace CodeEvaluation
         }
     }
 }
+
