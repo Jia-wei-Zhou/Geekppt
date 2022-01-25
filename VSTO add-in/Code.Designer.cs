@@ -65,8 +65,8 @@
             // 
             ribbonDropDownItemImpl1.Label = "C++ main";
             ribbonDropDownItemImpl2.Label = "C++";
-            ribbonDropDownItemImpl3.Label = "Java";
-            ribbonDropDownItemImpl4.Label = "Java main";
+            ribbonDropDownItemImpl3.Label = "Java main";
+            ribbonDropDownItemImpl4.Label = "Java";
             ribbonDropDownItemImpl5.Label = "Python";
             ribbonDropDownItemImpl6.Label = "General Inputs";
             this.languageBox.Items.Add(ribbonDropDownItemImpl1);
