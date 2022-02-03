@@ -54,8 +54,6 @@ namespace CodeEvaluation
             }
         }
 
-
-
         /// <summary>
         /// Create a new folder
         /// </summary>
@@ -92,6 +90,37 @@ namespace CodeEvaluation
             return newDir;
         }
 
+        /// <summary>
+        /// Obtain the selected programming language, there should be only one language at the same time
+        /// </summary>
+        /// <param name="codes">A dictionary whose content is boxName:code (only box name is used)</param>
+        /// <param name="type">The selected programming language, Language.Invalid is set if more than one languages are selected</param>
+        /// <returns>True is only one language is selected, otherwise false</returns>
+        public static bool ObtainLanguageType(Dictionary<string, string> codes, out Language type)
+        {
+            HashSet<Language> selectedType = new HashSet<Language>();
+            foreach(var str in codes.Keys)
+            {
+                ExtractCodeBoxInfo(str, out Language language, out bool _, out BoxContent _, out int _);
+                selectedType.Add(language);
+            }
+
+            HashSet<Language> allLanguages = new HashSet<Language>() { Language.CPP, Language.Java, Language.Python };
+            var result = allLanguages.Intersect(selectedType).ToList();
+            if(result.Count == 1)
+            {
+                type = result[0];
+                return true;
+            }            
+            type = Language.Invalid;
+            return false;
+        }
+
+        /// <summary>
+        /// suggest to delete this function in later version
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public static List<string> GenerateInputList(string input)
         {
             List<string> commands = new List<string>();
@@ -142,53 +171,6 @@ namespace CodeEvaluation
 
             return result;
         }
-
-        public static String abstractResult(String output, String address_folder)
-        {
-            String executeLine = address_folder + ">java";
-            int executeLinePos = output.IndexOf(executeLine);
-            int startPos = executeLinePos + executeLine.Length + 1;
-            startPos = output.IndexOf('\n', startPos);
-            startPos++;
-            int endPos = output.IndexOf(address_folder, startPos);
-            String result = output.Substring(startPos, endPos - startPos - 4);//
-            return result;
-        }
-
-        public static string RunProgramJava(string executable, string address_folder, string args = null, List<string> inputs = null)
-        {
-            string result = null;
-            var process = new Process()
-            {
-                StartInfo = new ProcessStartInfo()
-                {
-                    CreateNoWindow = true,
-                    FileName = "cmd.exe",
-                    UseShellExecute = false,
-                    RedirectStandardError = true,
-                    RedirectStandardInput = true,
-                    RedirectStandardOutput = true,
-
-                }
-            };
-
-            process.Start();
-            process.StandardInput.WriteLine("cd " + address_folder);
-            process.StandardInput.WriteLine(executable + " " + args);
-            if (inputs != null)
-            {
-                foreach (var cmd in inputs)
-                {
-                    process.StandardInput.WriteLine(cmd);
-                }
-            }
-            process.StandardInput.WriteLine("exit");
-            result = process.StandardOutput.ReadToEnd();
-            process.Close();
-            result = abstractResult(result, address_folder);
-            return result;
-        }
-
     }
 
     public interface ICodeEvaluation
@@ -287,11 +269,8 @@ namespace CodeEvaluation
 
         }
 
-
         public bool RunCode(out string result, string cmdArgs = "", string inputs = "")
         {
-            CodeEvaluationJava evaluate = new CodeEvaluationJava(mainFile, textAddress);
-            evaluate.CreateSourceFile();
             cmdArgs = mainFile;
             foreach (var address in libs)
             {
@@ -299,7 +278,6 @@ namespace CodeEvaluation
             }
 
             Auxiliary.RunProgram("javac", cmdArgs, inputs);
-
             
             //todo
             String fileName = GetClassName(mainFile);
@@ -325,11 +303,55 @@ namespace CodeEvaluation
             var data = Auxiliary.GenerateInputList(inputs);
             string executable = "java";
 
-            result = Auxiliary.RunProgramJava(executable, address_folder, fileName, data);
+            result = RunProgramJava(executable, address_folder, fileName, data);
             return true;
         }
 
+        private static string RunProgramJava(string executable, string address_folder, string args = null, List<string> inputs = null)
+        {
+            string result = null;
+            var process = new Process()
+            {
+                StartInfo = new ProcessStartInfo()
+                {
+                    CreateNoWindow = true,
+                    FileName = "cmd.exe",
+                    UseShellExecute = false,
+                    RedirectStandardError = true,
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
 
+                }
+            };
+
+            process.Start();
+            process.StandardInput.WriteLine("cd /d" + address_folder);
+            process.StandardInput.WriteLine(executable + " " + args);
+            if (inputs != null)
+            {
+                foreach (var cmd in inputs)
+                {
+                    process.StandardInput.WriteLine(cmd);
+                }
+            }
+            process.StandardInput.WriteLine("exit");
+            result = process.StandardOutput.ReadToEnd();
+            process.Close();
+            result = abstractResult(result, address_folder);
+            return result;
+        }
+
+        private static String abstractResult(String output, String address_folder)
+        {
+            String executeLine = address_folder + ">java";
+            int executeLinePos = output.IndexOf(executeLine);
+            int startPos = executeLinePos + executeLine.Length + 1;
+            startPos = output.IndexOf('\n', startPos);
+            startPos++;
+            int endPos = output.IndexOf(address_folder, startPos);
+            String result = output.Substring(startPos, endPos - startPos - 4);//
+            return result;
+        }
     }
 
     public class CodeEvaluationCpp : ICodeEvaluation
@@ -394,7 +416,7 @@ namespace CodeEvaluation
             mainFile = sourceMain;
         }
 
-        public string GenerateCmakeLists(int cppStandard = 20, string cmakeMinVersion = "3.10")
+        private string GenerateCmakeLists(int cppStandard = 20, string cmakeMinVersion = "3.10")
         {
             string cmakeFilename = CodeFolder + Path.DirectorySeparatorChar + "CMakeLists.txt";
 
@@ -430,6 +452,7 @@ namespace CodeEvaluation
 
         public bool RunCode(out string result, string cmdArgs = "", string inputs = "")
         {
+            GenerateCmakeLists();
             string buildDir = CompileCode(out string init, out string build);
 
             string current = Directory.GetCurrentDirectory();
@@ -484,7 +507,6 @@ namespace CodeEvaluation
             get => CODE_FOLDER;
         }
 
-
         public CodeEvaluationPython(string mainFile, List<string> textAddress)
         {
             OS_NAME = Environment.OSVersion.Platform.ToString();
@@ -498,7 +520,7 @@ namespace CodeEvaluation
         /// get local python executable file
         /// </summary>
         /// <returns></returns>
-        public static string GetPythonPath()
+        private static string GetPythonPath()
         {
             IDictionary environmentVariables = Environment.GetEnvironmentVariables();
             string pathVariable = environmentVariables["Path"] as string;

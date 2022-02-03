@@ -38,8 +38,7 @@ namespace CodeEvaluation
             // obtain current slide
             PowerPoint.Slide slide = (PowerPoint.Slide)Globals.ThisAddIn.Application.ActiveWindow.View.Slide;
             List<PowerPoint.Shape> shapes = new List<PowerPoint.Shape>();
-            string color = Auxiliary.GenerateColor();
-            string result = "";
+            string color = Auxiliary.GenerateColor();            
             
             try
             {
@@ -50,20 +49,35 @@ namespace CodeEvaluation
                     if (shape.HasTextFrame == Office.MsoTriState.msoTrue)
                     {
                         codes.Add(shape.Name, shape.TextFrame.TextRange.Text);
-                        shapes.Add(shape);
-                        //result += shape.Name + "\n";
+                        shapes.Add(shape);                        
                     }
                 }
 
                 Auxiliary.GenerateTextFileAndInputs(codes, path, out var files, out var main, out var inputs);
-                // Test case, feel free to change. 
-                CodeEvaluationPython evaluate = new CodeEvaluationPython(main, files);
-                evaluate.CreateSourceFile();
-                // python does not need cmake
-                // evaluate.GenerateCmakeLists();
-                evaluate.RunCode(out var res, "", inputs);
-                AddTextBox(slide, "Arial", 18, color, res);               
+                if(!Auxiliary.ObtainLanguageType(codes, out Language type))
+                {
+                    AddTextBox(slide, "Arial", 18, color, "More than one programming languages are selected");
+                }
 
+                ICodeEvaluation evaluate;
+                switch(type)
+                {
+                    case Language.CPP:
+                        evaluate = new CodeEvaluationCpp(main, files);
+                        break;
+                    case Language.Python:
+                        evaluate = new CodeEvaluationPython(main, files);
+                        break;
+                    case Language.Java:
+                        evaluate = new CodeEvaluationJava(main, files);
+                        break;
+                    default:
+                        throw new ArgumentException($"The selected language ({type}) is invalid"); 
+                }
+                evaluate.CreateSourceFile();
+                evaluate.RunCode(out var res, "", inputs);
+                AddTextBox(slide, "Arial", 18, color, res);                                                           
+                
                 foreach (var shape in shapes)
                 {
                     shape.TextFrame.TextRange.Font.Color.RGB = Int32.Parse(color, System.Globalization.NumberStyles.HexNumber);
