@@ -171,6 +171,20 @@ namespace CodeEvaluation
 
             return result;
         }
+        
+        /// <summary>
+        /// Add a picture to the slide
+        /// </summary>
+        /// <param name="file_path">The file path of the added picture</param>
+        /// <param name="slide">The slide to which the picture will be added</param>
+        /// <param name="x">The abscissa relative to the upper left corner of the slide</param>
+        /// <param name="y">The ordinate relative to the upper left corner of the slide</param>
+        /// <param name="height">The height of the picture</param>
+        /// <param name="width">The width of the picture</param>
+        public static void AddPicture(String file_path, Microsoft.Office.Interop.PowerPoint.Slide slide, float x = 0, float y = 0, float height = 250, float width = 250)
+        {
+            slide.Shapes.AddPicture(file_path, Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoTrue, x, y, height, width);
+        }
     }
 
     public interface ICodeEvaluation
