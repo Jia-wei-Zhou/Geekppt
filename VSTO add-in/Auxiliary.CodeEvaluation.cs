@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
 using CodeEvaluation;
+using PowerPoint = Microsoft.Office.Interop.PowerPoint;
+using System.Drawing;
 
 
 namespace CodeEvaluation
@@ -181,9 +183,9 @@ namespace CodeEvaluation
         /// <param name="y">The ordinate relative to the upper left corner of the slide</param>
         /// <param name="height">The height of the picture</param>
         /// <param name="width">The width of the picture</param>
-        public static void AddPicture(String file_path, Microsoft.Office.Interop.PowerPoint.Slide slide, float x = 0, float y = 0, float height = 250, float width = 250)
+        public static void AddPicture(String file_path, Microsoft.Office.Interop.PowerPoint.Slide slide, float x = 0, float y = 0, float width = 250, float height = 250)
         {
-            slide.Shapes.AddPicture(file_path, Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoTrue, x, y, height, width);
+            slide.Shapes.AddPicture(file_path, Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoTrue, x, y, width, height);
         }
     }
 
@@ -495,6 +497,7 @@ namespace CodeEvaluation
     public class CodeEvaluationPython : ICodeEvaluation
     {
         private List<string> textAddress;
+        private List<string> pictureAddress = new List<string>();
         private List<string> libs;
         private string mainFile;
         private const Language TYPE = Language.Python;
@@ -504,6 +507,11 @@ namespace CodeEvaluation
         public List<string> TextAddress
         {
             get => libs;
+        }
+
+        public List<string> PictureAddress
+        {
+            get => pictureAddress;
         }
 
         public string MainFile
@@ -557,6 +565,16 @@ namespace CodeEvaluation
             {
                 string filename = CodeFolder + Path.DirectorySeparatorChar + Auxiliary.GenerateRandomName() + ".py";
                 string content = File.ReadAllText(address);
+                while (content.Contains("plt.show()"))
+                {
+                    // replace first occurence of plt.show() with plt.savefig(randomname)
+                    string removed = "plt.show()";
+                    string randomPicName = CodeFolder + Path.DirectorySeparatorChar + Auxiliary.GenerateRandomName() + ".jpg";
+                    string replaced = "plt.savefig(\"" + randomPicName + "\")";
+                    pictureAddress.Add(randomPicName);
+                    int index = content.IndexOf(removed);
+                    content = content.Remove(index, removed.Length).Insert(index, replaced);
+                }
                 File.WriteAllText(filename, content);
                 libs.Add(filename);
             }
@@ -598,6 +616,17 @@ namespace CodeEvaluation
             string executable = GetPythonPath();
             cmdArgs = mainFile + cmdArgs;
             result = Auxiliary.RunProgram(executable, cmdArgs, inputs);
+            if (pictureAddress.Count() > 0)
+            {
+                foreach (var pic in pictureAddress)
+                {
+                    PowerPoint.Slide slide = (PowerPoint.Slide)Globals.ThisAddIn.Application.ActiveWindow.View.Slide;
+                    var img = Image.FromFile(pic);
+                    float h = 250;
+                    float w = h * img.Width / img.Height;
+                    Auxiliary.AddPicture(pic, slide, 0, 0, w, h);
+                }
+            }
 
             return true;
         }

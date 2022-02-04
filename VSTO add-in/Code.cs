@@ -76,8 +76,11 @@ namespace CodeEvaluation
                 }
                 evaluate.CreateSourceFile();
                 evaluate.RunCode(out var res, "", inputs);
-                AddTextBox(slide, "Arial", 18, color, res);                                                           
-                
+                if (res.Length > 0)
+                {
+                    AddTextBox(slide, "Arial", 18, color, res);
+                }
+
                 foreach (var shape in shapes)
                 {
                     shape.TextFrame.TextRange.Font.Color.RGB = Int32.Parse(color, System.Globalization.NumberStyles.HexNumber);
