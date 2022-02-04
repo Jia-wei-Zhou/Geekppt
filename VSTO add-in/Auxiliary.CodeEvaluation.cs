@@ -569,7 +569,7 @@ namespace CodeEvaluation
                 {
                     // replace first occurence of plt.show() with plt.savefig(randomname)
                     string removed = "plt.show()";
-                    string randomPicName = CodeFolder + Path.DirectorySeparatorChar + Auxiliary.GenerateRandomName() + ".jpg";
+                    string randomPicName = CodeFolder + Path.DirectorySeparatorChar + Auxiliary.GenerateRandomName() + ".png";
                     string replaced = "plt.savefig(\"" + randomPicName + "\")";
                     pictureAddress.Add(randomPicName);
                     int index = content.IndexOf(removed);
