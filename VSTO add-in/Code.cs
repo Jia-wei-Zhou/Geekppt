@@ -20,12 +20,12 @@ namespace CodeEvaluation
         {
             // obtain the selected language
             string language = this.languageBox.Text;
-            string text = language.Equals("General Inputs", StringComparison.OrdinalIgnoreCase)? 
+            string text = language.Equals("General Inputs", StringComparison.OrdinalIgnoreCase) ?
                 "Input arguments (separate by a space or new line)" : String.Format("Please insert your {0} code", language);
 
             // obtain current active slide
             PowerPoint.Slide slide = (PowerPoint.Slide)Globals.ThisAddIn.Application.ActiveWindow.View.Slide;
-            
+
             PowerPoint.Shape textBox = AddTextBox(slide, "Arial", 18, "000000", text);
             BoxContent content = language.Equals("General Inputs", StringComparison.OrdinalIgnoreCase) ? BoxContent.Input : BoxContent.Code;
             textBox.Name = Auxiliary.GenerateCodeBoxName(language, content);
@@ -33,13 +33,15 @@ namespace CodeEvaluation
 
         private void evaluateButton_Click(object sender, RibbonControlEventArgs e)
         {
+
             // create a new folder for the selected code
-            string path = Auxiliary.CreateFolder("temp_PPT_add_in", Directory.GetCurrentDirectory(), true);            
+            string path = Auxiliary.CreateFolder("temp_PPT_add_in", Directory.GetCurrentDirectory(), true);
             // obtain current slide
             PowerPoint.Slide slide = (PowerPoint.Slide)Globals.ThisAddIn.Application.ActiveWindow.View.Slide;
             List<PowerPoint.Shape> shapes = new List<PowerPoint.Shape>();
-            string color = Auxiliary.GenerateColor();            
-            
+            string color = Auxiliary.GenerateColor();
+            string result = "";
+
             try
             {
                 // obtain all the selected textboxes   
@@ -48,46 +50,47 @@ namespace CodeEvaluation
                 {
                     if (shape.HasTextFrame == Office.MsoTriState.msoTrue)
                     {
-                        codes.Add(shape.Name, shape.TextFrame.TextRange.Text);
-                        shapes.Add(shape);                        
+                        //to do!!!!!!!!!
+                        //
+
+                        if (shape.Name.IndexOf("java") < 0 && shape.Name.IndexOf("python") < 0 && shape.Name.IndexOf("cpp") < 0 && shape.Name.IndexOf("general") < 0)
+                        {
+                            string[] separatingStrings = { "\r" };
+                            string[] tags = shape.TextFrame.TextRange.Text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+                            string tag = tags[0];
+                            string shapeName = Auxiliary.GenerateCodeBoxNameForMd(tag);
+                            separatingStrings[0] = tag;
+                            string[] texts = shape.TextFrame.TextRange.Text.Split(separatingStrings, StringSplitOptions.RemoveEmptyEntries);
+                            string text = texts[0];
+                            codes.Add(shapeName, text);
+                            shapes.Add(shape);
+                        }
+                        else
+                        {
+                            codes.Add(shape.Name, shape.TextFrame.TextRange.Text);
+                            shapes.Add(shape);
+                        }
+
+                        //result += shape.Name + "\n";
                     }
                 }
 
                 Auxiliary.GenerateTextFileAndInputs(codes, path, out var files, out var main, out var inputs);
-                if(!Auxiliary.ObtainLanguageType(codes, out Language type))
-                {
-                    AddTextBox(slide, "Arial", 18, color, "More than one programming languages are selected");
-                }
-
-                ICodeEvaluation evaluate;
-                switch(type)
-                {
-                    case Language.CPP:
-                        evaluate = new CodeEvaluationCpp(main, files);
-                        break;
-                    case Language.Python:
-                        evaluate = new CodeEvaluationPython(main, files);
-                        break;
-                    case Language.Java:
-                        evaluate = new CodeEvaluationJava(main, files);
-                        break;
-                    default:
-                        throw new ArgumentException($"The selected language ({type}) is invalid"); 
-                }
+                // Test case, feel free to change. 
+                CodeEvaluationJava evaluate = new CodeEvaluationJava(main, files);
                 evaluate.CreateSourceFile();
+                // python does not need cmake
+                // evaluate.GenerateCmakeLists();
                 evaluate.RunCode(out var res, "", inputs);
-                if (res.Length > 0)
-                {
-                    AddTextBox(slide, "Arial", 18, color, res);
-                }
+                AddTextBox(slide, "Arial", 18, color, res);
 
                 foreach (var shape in shapes)
                 {
                     shape.TextFrame.TextRange.Font.Color.RGB = Int32.Parse(color, System.Globalization.NumberStyles.HexNumber);
                 }
             }
-            catch(System.Runtime.InteropServices.COMException exception)
-            {                
+            catch (System.Runtime.InteropServices.COMException exception)
+            {
                 Console.WriteLine(exception.ToString());
             }
         }
@@ -105,5 +108,7 @@ namespace CodeEvaluation
 
             return textBox;
         }
+
+
     }
 }

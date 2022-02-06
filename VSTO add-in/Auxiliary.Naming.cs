@@ -10,9 +10,9 @@ namespace CodeEvaluation
 
     partial class Auxiliary
     {
-        public const string tempFolder = "temp_PPT_add_in";        
+        public const string tempFolder = "temp_PPT_add_in";
         private static int boxID = 0;
-        private static readonly Random rand = new Random();
+        private static int seed = 0; // avoid pseudorandom number
 
         /// <summary>
         /// Generate text box name
@@ -25,6 +25,25 @@ namespace CodeEvaluation
         {
             string boxName = baseName.ToLower() + "_";
             boxName += content.ToString().ToLower() + "_";
+            boxName += id ?? boxID++;
+
+            return boxName;
+        }
+
+        public static string GenerateCodeBoxNameForMd(string baseName, int? id = null)
+        {
+            string[] seperate = { "@", "_" };
+            string boxName = null;
+            string[] names = baseName.Split(seperate, StringSplitOptions.RemoveEmptyEntries);
+            if (names.Length == 2)
+            {
+                boxName = names[1] + '_' + names[0] + '_';
+            }
+            if (names.Length == 3)
+            {
+                boxName = names[1] + ' ' + names[2] + '_' + names[0] + '_';
+            }
+
             boxName += id ?? boxID++;
 
             return boxName;
@@ -92,7 +111,7 @@ namespace CodeEvaluation
         /// <returns></returns>
         public static string GenerateFilename(Language type, bool isMain, int id)
         {
-            if(type == Language.CPP)
+            if (type == Language.CPP)
             {
                 return GenerateRandomName() + ".txt";
             }
@@ -105,9 +124,10 @@ namespace CodeEvaluation
         }
 
         public static string GenerateRandomName()
-        {                      
-            // Leading X ensure that the filename does not begin with a number
-            string result = "X" + rand.Next(1000000).ToString("X") + "_";
+        {
+            Random rand = new Random(seed++);
+            // python does not allow import package beginning with number
+            string result = "file" + rand.Next(1000000).ToString("X") + "_";
             result += rand.Next(100000).ToString("x") + "_";
             result += rand.Next(10000).ToString("X");
             return result;
