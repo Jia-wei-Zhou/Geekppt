@@ -40,7 +40,7 @@ namespace CodeEvaluation
             PowerPoint.Slide slide = (PowerPoint.Slide)Globals.ThisAddIn.Application.ActiveWindow.View.Slide;
             List<PowerPoint.Shape> shapes = new List<PowerPoint.Shape>();
             string color = Auxiliary.GenerateColor();
-            string result = "";
+            
 
             try
             {

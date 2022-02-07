@@ -12,7 +12,8 @@ namespace CodeEvaluation
     {
         public const string tempFolder = "temp_PPT_add_in";
         private static int boxID = 0;
-        private static int seed = 0; // avoid pseudorandom number
+        private static readonly Random rand = new Random();
+
 
         /// <summary>
         /// Generate text box name
@@ -125,12 +126,12 @@ namespace CodeEvaluation
 
         public static string GenerateRandomName()
         {
-            Random rand = new Random(seed++);
-            // python does not allow import package beginning with number
-            string result = "file" + rand.Next(1000000).ToString("X") + "_";
+            // Leading X ensure that the filename does not begin with a number
+            string result = "X" + rand.Next(1000000).ToString("X") + "_";
             result += rand.Next(100000).ToString("x") + "_";
             result += rand.Next(10000).ToString("X");
             return result;
+
         }
     }
 }
