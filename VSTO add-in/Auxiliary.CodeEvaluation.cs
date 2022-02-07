@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
 using CodeEvaluation;
+using PowerPoint = Microsoft.Office.Interop.PowerPoint;
+using System.Drawing;
 
 
 namespace CodeEvaluation
@@ -92,6 +94,32 @@ namespace CodeEvaluation
             return newDir;
         }
 
+        /// <summary>
+        /// Obtain the selected programming language, there should be only one language at the same time
+        /// </summary>
+        /// <param name="codes">A dictionary whose content is boxName:code (only box name is used)</param>
+        /// <param name="type">The selected programming language, Language.Invalid is set if more than one languages are selected</param>
+        /// <returns>True is only one language is selected, otherwise false</returns>
+        public static bool ObtainLanguageType(Dictionary<string, string> codes, out Language type)
+        {
+            HashSet<Language> selectedType = new HashSet<Language>();
+            foreach (var str in codes.Keys)
+            {
+                ExtractCodeBoxInfo(str, out Language language, out bool _, out BoxContent _, out int _);
+                selectedType.Add(language);
+            }
+
+            HashSet<Language> allLanguages = new HashSet<Language>() { Language.CPP, Language.Java, Language.Python };
+            var result = allLanguages.Intersect(selectedType).ToList();
+            if (result.Count == 1)
+            {
+                type = result[0];
+                return true;
+            }
+            type = Language.Invalid;
+            return false;
+        }
+
         public static List<string> GenerateInputList(string input)
         {
             List<string> commands = new List<string>();
@@ -143,54 +171,23 @@ namespace CodeEvaluation
             return result;
         }
 
-        public static String abstractResult(String output, String address_folder)
+        /// <summary>
+        /// Add a picture to the slide
+        /// </summary>
+        /// <param name="file_path">The file path of the added picture</param>
+        /// <param name="slide">The slide to which the picture will be added</param>
+        /// <param name="x">The abscissa relative to the upper left corner of the slide</param>
+        /// <param name="y">The ordinate relative to the upper left corner of the slide</param>
+        /// <param name="height">The height of the picture</param>
+        /// <param name="width">The width of the picture</param>
+        public static void AddPicture(String file_path, Microsoft.Office.Interop.PowerPoint.Slide slide, float x = 0, float y = 0, float width = 250, float height = 250)
         {
-            String executeLine = address_folder + ">java";
-            int executeLinePos = output.IndexOf(executeLine);
-            int startPos = executeLinePos + executeLine.Length + 1;
-            startPos = output.IndexOf('\n', startPos);
-            startPos++;
-            int endPos = output.IndexOf(address_folder, startPos);
-            String result = output.Substring(startPos, endPos - startPos - 4);
-            return result;
+            slide.Shapes.AddPicture(file_path, Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoTrue, x, y, width, height);
         }
+    
 
-        public static string RunProgramJava(string executable, string address_folder, string args = null, List<string> inputs = null)
-        {
-            string result = null;
-            var process = new Process()
-            {
-                StartInfo = new ProcessStartInfo()
-                {
-                    CreateNoWindow = true,
-                    FileName = "cmd.exe",
-                    UseShellExecute = false,
-                    RedirectStandardError = true,
-                    RedirectStandardInput = true,
-                    RedirectStandardOutput = true,
-
-                }
-            };
-
-            process.Start();
-            process.StandardInput.WriteLine("cd " + address_folder);
-            String input = null;
-            if (inputs != null)
-            {
-                foreach (var cmd in inputs)
-                {
-                    input += " " + cmd;
-                }
-            }
-            process.StandardInput.WriteLine(executable + " " + args + " " + input);
-
-            process.StandardInput.WriteLine("exit");
-            result = process.StandardOutput.ReadToEnd();
-            process.Close();
-            result = abstractResult(result, address_folder);
-            return result;
-        }
-
+        
+        
     }
 
     public interface ICodeEvaluation
@@ -290,6 +287,8 @@ namespace CodeEvaluation
         }
 
 
+
+
         public bool RunCode(out string result, string cmdArgs = "", string inputs = "")
         {
             CodeEvaluationJava evaluate = new CodeEvaluationJava(mainFile, textAddress);
@@ -317,8 +316,58 @@ namespace CodeEvaluation
             var data = Auxiliary.GenerateInputList(inputs);
             string executable = "java";
 
-            result = Auxiliary.RunProgramJava(executable, address_folder, fileName, data);
+            result = RunProgramJava(executable, address_folder, fileName, data);
             return true;
+        }
+
+       
+
+        public static string RunProgramJava(string executable, string address_folder, string args = null, List<string> inputs = null)
+        {
+            string result = null;
+            var process = new Process()
+            {
+                StartInfo = new ProcessStartInfo()
+                {
+                    CreateNoWindow = true,
+                    FileName = "cmd.exe",
+                    UseShellExecute = false,
+                    RedirectStandardError = true,
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
+
+                }
+            };
+
+            process.Start();
+            process.StandardInput.WriteLine("cd " + address_folder);
+            String input = null;
+            if (inputs != null)
+            {
+                foreach (var cmd in inputs)
+                {
+                    input += " " + cmd;
+                }
+            }
+            process.StandardInput.WriteLine(executable + " " + args + " " + input);
+
+            process.StandardInput.WriteLine("exit");
+            result = process.StandardOutput.ReadToEnd();
+            process.Close();
+            result = abstractResult(result, address_folder);
+            return result;
+        }
+
+        public static String abstractResult(String output, String address_folder)
+        {
+            String executeLine = address_folder + ">java";
+            int executeLinePos = output.IndexOf(executeLine);
+            int startPos = executeLinePos + executeLine.Length + 1;
+            startPos = output.IndexOf('\n', startPos);
+            startPos++;
+            int endPos = output.IndexOf(address_folder, startPos);
+            String result = output.Substring(startPos, endPos - startPos - 4);
+            return result;
         }
 
 
@@ -386,7 +435,7 @@ namespace CodeEvaluation
             mainFile = sourceMain;
         }
 
-        public string GenerateCmakeLists(int cppStandard = 20, string cmakeMinVersion = "3.10")
+        private string GenerateCmakeLists(int cppStandard = 20, string cmakeMinVersion = "3.10")
         {
             string cmakeFilename = CodeFolder + Path.DirectorySeparatorChar + "CMakeLists.txt";
 
@@ -422,6 +471,7 @@ namespace CodeEvaluation
 
         public bool RunCode(out string result, string cmdArgs = "", string inputs = "")
         {
+            GenerateCmakeLists();
             string buildDir = CompileCode(out string init, out string build);
 
             string current = Directory.GetCurrentDirectory();
@@ -450,6 +500,7 @@ namespace CodeEvaluation
     public class CodeEvaluationPython : ICodeEvaluation
     {
         private List<string> textAddress;
+        private List<string> pictureAddress = new List<string>();
         private List<string> libs;
         private string mainFile;
         private const Language TYPE = Language.Python;
@@ -459,6 +510,11 @@ namespace CodeEvaluation
         public List<string> TextAddress
         {
             get => libs;
+        }
+
+        public List<string> PictureAddress
+        {
+            get => pictureAddress;
         }
 
         public string MainFile
@@ -476,7 +532,6 @@ namespace CodeEvaluation
             get => CODE_FOLDER;
         }
 
-
         public CodeEvaluationPython(string mainFile, List<string> textAddress)
         {
             OS_NAME = Environment.OSVersion.Platform.ToString();
@@ -490,7 +545,7 @@ namespace CodeEvaluation
         /// get local python executable file
         /// </summary>
         /// <returns></returns>
-        public static string GetPythonPath()
+        private static string GetPythonPath()
         {
             IDictionary environmentVariables = Environment.GetEnvironmentVariables();
             string pathVariable = environmentVariables["Path"] as string;
@@ -513,6 +568,16 @@ namespace CodeEvaluation
             {
                 string filename = CodeFolder + Path.DirectorySeparatorChar + Auxiliary.GenerateRandomName() + ".py";
                 string content = File.ReadAllText(address);
+                while (content.Contains("plt.show()"))
+                {
+                    // replace first occurence of plt.show() with plt.savefig(randomname)
+                    string removed = "plt.show()";
+                    string randomPicName = CodeFolder + Path.DirectorySeparatorChar + Auxiliary.GenerateRandomName() + ".png";
+                    string replaced = "plt.savefig(\"" + randomPicName + "\")";
+                    pictureAddress.Add(randomPicName);
+                    int index = content.IndexOf(removed);
+                    content = content.Remove(index, removed.Length).Insert(index, replaced);
+                }
                 File.WriteAllText(filename, content);
                 libs.Add(filename);
             }
@@ -554,6 +619,17 @@ namespace CodeEvaluation
             string executable = GetPythonPath();
             cmdArgs = mainFile + cmdArgs;
             result = Auxiliary.RunProgram(executable, cmdArgs, inputs);
+            if (pictureAddress.Count() > 0)
+            {
+                foreach (var pic in pictureAddress)
+                {
+                    PowerPoint.Slide slide = (PowerPoint.Slide)Globals.ThisAddIn.Application.ActiveWindow.View.Slide;
+                    var img = Image.FromFile(pic);
+                    float h = 250;
+                    float w = h * img.Width / img.Height;
+                    Auxiliary.AddPicture(pic, slide, 0, 0, w, h);
+                }
+            }
 
             return true;
         }

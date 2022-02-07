@@ -55,13 +55,16 @@ namespace CodeEvaluation
 
                         if (shape.Name.IndexOf("java") < 0 && shape.Name.IndexOf("python") < 0 && shape.Name.IndexOf("cpp") < 0 && shape.Name.IndexOf("general") < 0)
                         {
-                            string[] separatingStrings = { "\r" };
+                            string[] separatingStrings = { "\r" ,"\n"};
                             string[] tags = shape.TextFrame.TextRange.Text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
                             string tag = tags[0];
                             string shapeName = Auxiliary.GenerateCodeBoxNameForMd(tag);
                             separatingStrings[0] = tag;
                             string[] texts = shape.TextFrame.TextRange.Text.Split(separatingStrings, StringSplitOptions.RemoveEmptyEntries);
-                            string text = texts[0];
+                            string text = null;
+                            for (int i = 0; i < texts.Length; i++) {
+                                text += texts[i] + "\n";
+                            }
                             codes.Add(shapeName, text);
                             shapes.Add(shape);
                         }
@@ -76,13 +79,34 @@ namespace CodeEvaluation
                 }
 
                 Auxiliary.GenerateTextFileAndInputs(codes, path, out var files, out var main, out var inputs);
-                // Test case, feel free to change. 
-                CodeEvaluationJava evaluate = new CodeEvaluationJava(main, files);
+                if (!Auxiliary.ObtainLanguageType(codes, out Language type))
+                {
+                    AddTextBox(slide, "Arial", 18, color, "More than one programming languages are selected");
+                }
+
+                ICodeEvaluation evaluate;
+                switch (type)
+                {
+                    case Language.CPP:
+                        evaluate = new CodeEvaluationCpp(main, files);
+                        break;
+                    case Language.Python:
+                        evaluate = new CodeEvaluationPython(main, files);
+                        break;
+                    case Language.Java:
+                        evaluate = new CodeEvaluationJava(main, files);
+                        break;
+                    default:
+                        throw new ArgumentException($"The selected language ({type}) is invalid");
+                }
                 evaluate.CreateSourceFile();
                 // python does not need cmake
                 // evaluate.GenerateCmakeLists();
                 evaluate.RunCode(out var res, "", inputs);
-                AddTextBox(slide, "Arial", 18, color, res);
+                if (res.Length > 0)
+                {
+                    AddTextBox(slide, "Arial", 18, color, res);
+                }
 
                 foreach (var shape in shapes)
                 {
