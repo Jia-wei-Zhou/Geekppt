@@ -291,8 +291,7 @@ namespace CodeEvaluation
 
         public bool RunCode(out string result, string cmdArgs = "", string inputs = "")
         {
-            CodeEvaluationJava evaluate = new CodeEvaluationJava(mainFile, textAddress);
-            evaluate.CreateSourceFile();
+            
             cmdArgs = mainFile;
             foreach (var address in libs)
             {
@@ -308,6 +307,16 @@ namespace CodeEvaluation
             if (fileName == "")
             {
                 throw (new NullReferenceException("class name not found"));
+            }
+
+            foreach (var address in libs)
+            {
+                String fileName_libs = GetClassName(address);
+                if (fileName_libs == "")
+                {
+                    throw (new NullReferenceException("class name not found"));
+                }
+                fileName += " " + fileName_libs;
             }
 
             string address_folder = mainFile.Substring(0, mainFile.LastIndexOf('.'));
