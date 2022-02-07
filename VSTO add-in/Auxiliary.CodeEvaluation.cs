@@ -56,6 +56,8 @@ namespace CodeEvaluation
             }
         }
 
+
+
         /// <summary>
         /// Create a new folder
         /// </summary>
@@ -101,7 +103,7 @@ namespace CodeEvaluation
         public static bool ObtainLanguageType(Dictionary<string, string> codes, out Language type)
         {
             HashSet<Language> selectedType = new HashSet<Language>();
-            foreach(var str in codes.Keys)
+            foreach (var str in codes.Keys)
             {
                 ExtractCodeBoxInfo(str, out Language language, out bool _, out BoxContent _, out int _);
                 selectedType.Add(language);
@@ -109,20 +111,15 @@ namespace CodeEvaluation
 
             HashSet<Language> allLanguages = new HashSet<Language>() { Language.CPP, Language.Java, Language.Python };
             var result = allLanguages.Intersect(selectedType).ToList();
-            if(result.Count == 1)
+            if (result.Count == 1)
             {
                 type = result[0];
                 return true;
-            }            
+            }
             type = Language.Invalid;
             return false;
         }
 
-        /// <summary>
-        /// suggest to delete this function in later version
-        /// </summary>
-        /// <param name="input"></param>
-        /// <returns></returns>
         public static List<string> GenerateInputList(string input)
         {
             List<string> commands = new List<string>();
@@ -173,7 +170,7 @@ namespace CodeEvaluation
 
             return result;
         }
-        
+
         /// <summary>
         /// Add a picture to the slide
         /// </summary>
@@ -187,6 +184,10 @@ namespace CodeEvaluation
         {
             slide.Shapes.AddPicture(file_path, Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoTrue, x, y, width, height);
         }
+    
+
+        
+        
     }
 
     public interface ICodeEvaluation
@@ -285,8 +286,12 @@ namespace CodeEvaluation
 
         }
 
+
+
+
         public bool RunCode(out string result, string cmdArgs = "", string inputs = "")
         {
+            
             cmdArgs = mainFile;
             foreach (var address in libs)
             {
@@ -294,7 +299,8 @@ namespace CodeEvaluation
             }
 
             Auxiliary.RunProgram("javac", cmdArgs, inputs);
-            
+
+
             //todo
             String fileName = GetClassName(mainFile);
 
@@ -323,7 +329,9 @@ namespace CodeEvaluation
             return true;
         }
 
-        private static string RunProgramJava(string executable, string address_folder, string args = null, List<string> inputs = null)
+       
+
+        public static string RunProgramJava(string executable, string address_folder, string args = null, List<string> inputs = null)
         {
             string result = null;
             var process = new Process()
@@ -341,15 +349,17 @@ namespace CodeEvaluation
             };
 
             process.Start();
-            process.StandardInput.WriteLine("cd /d" + address_folder);
-            process.StandardInput.WriteLine(executable + " " + args);
+            process.StandardInput.WriteLine("cd " + address_folder);
+            String input = null;
             if (inputs != null)
             {
                 foreach (var cmd in inputs)
                 {
-                    process.StandardInput.WriteLine(cmd);
+                    input += " " + cmd;
                 }
             }
+            process.StandardInput.WriteLine(executable + " " + args + " " + input);
+
             process.StandardInput.WriteLine("exit");
             result = process.StandardOutput.ReadToEnd();
             process.Close();
@@ -357,7 +367,7 @@ namespace CodeEvaluation
             return result;
         }
 
-        private static String abstractResult(String output, String address_folder)
+        public static String abstractResult(String output, String address_folder)
         {
             String executeLine = address_folder + ">java";
             int executeLinePos = output.IndexOf(executeLine);
@@ -365,9 +375,11 @@ namespace CodeEvaluation
             startPos = output.IndexOf('\n', startPos);
             startPos++;
             int endPos = output.IndexOf(address_folder, startPos);
-            String result = output.Substring(startPos, endPos - startPos - 4);//
+            String result = output.Substring(startPos, endPos - startPos - 4);
             return result;
         }
+
+
     }
 
     public class CodeEvaluationCpp : ICodeEvaluation
@@ -632,4 +644,3 @@ namespace CodeEvaluation
         }
     }
 }
-
