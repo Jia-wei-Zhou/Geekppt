@@ -12,6 +12,7 @@ namespace CodeEvaluation
     {
         public const string tempFolder = "temp_PPT_add_in";
         private static int boxID = 0;
+        private static int tableID = 0;
         private static readonly Random rand = new Random();
 
 
@@ -29,6 +30,13 @@ namespace CodeEvaluation
             boxName += id ?? boxID++;
 
             return boxName;
+        }
+        public static string GenerateCodeTableName(int? id = null)
+        {
+            string tableName = "table";
+            tableName += id ?? tableID++;
+
+            return tableName;
         }
 
         public static string GenerateCodeBoxNameForMd(string baseName, int? id = null)

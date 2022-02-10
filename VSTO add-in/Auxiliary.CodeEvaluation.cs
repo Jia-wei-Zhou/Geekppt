@@ -132,6 +132,48 @@ namespace CodeEvaluation
             return commands;
         }
 
+        public static string GenerateTableInputList(PowerPoint.Shape table)
+        {
+            string inputList = "[";
+            for (int i = 2; i <= table.Table.Rows.Count; i++)
+            {
+                for (int j = 1; j <= table.Table.Columns.Count; j++)
+                {
+                    if (table.Table.Cell(i, j).Shape.TextFrame.TextRange.Text != null && table.Table.Cell(i, j).Shape.TextFrame.TextRange.Text != "")
+                    {
+                        inputList += table.Table.Cell(i, j).Shape.TextFrame.TextRange.Text;
+                        if (i != table.Table.Rows.Count || j != table.Table.Columns.Count)
+                        {
+                            inputList += ",";
+                        }
+                    }
+                }
+            }
+            inputList += "]";
+            return inputList;
+        }
+
+        public static string ReplaceParametersWithTableInputList(string text, Dictionary<string, string> tableInput)
+        {
+            foreach (string key in tableInput.Keys)
+            {
+                while (true)
+                {
+                    int pos = text.IndexOf(key);
+                    if (pos == -1)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        text = text.Remove(pos, key.Length);
+                        text = text.Insert(pos, tableInput[key]);
+                    }
+                }
+            }
+            return text;
+        }
+
         /// <summary>
         /// Run a specific program, exception handling should be inserted 
         /// exe not found, input args not match

@@ -25,7 +25,14 @@ namespace CodeEvaluation
 
             // obtain current active slide
             PowerPoint.Slide slide = (PowerPoint.Slide)Globals.ThisAddIn.Application.ActiveWindow.View.Slide;
-
+            if (language == "parameter table")
+            {
+                PowerPoint.Shape table = slide.Shapes.AddTable(2, 3, 0, 0);
+                table.Name = Auxiliary.GenerateCodeTableName();
+                table.Table.Cell(1, 1).Merge(table.Table.Cell(1, 3));
+                table.Table.Cell(1, 1).Shape.TextFrame.TextRange.Text = table.Name;
+                return;
+            }
             PowerPoint.Shape textBox = AddTextBox(slide, "Arial", 18, "000000", text);
             BoxContent content = language.Equals("General Inputs", StringComparison.OrdinalIgnoreCase) ? BoxContent.Input : BoxContent.Code;
             textBox.Name = Auxiliary.GenerateCodeBoxName(language, content);
@@ -46,6 +53,19 @@ namespace CodeEvaluation
             {
                 // obtain all the selected textboxes   
                 Dictionary<string, string> codes = new Dictionary<string, string>();
+                Dictionary<string, string> tableInput = new Dictionary<string, string>();
+                bool hasTableInput = false;
+
+                foreach (PowerPoint.Shape shape in Globals.ThisAddIn.Application.ActiveWindow.Selection.ShapeRange)
+                {
+                    if (shape.HasTable == Office.MsoTriState.msoTrue)
+                    {
+                        hasTableInput = true;
+                        string inputList = Auxiliary.GenerateTableInputList(shape);
+                        tableInput.Add(shape.Name, inputList);
+                        //shape.Table.Cell(2, 1).Shape.TextFrame.TextRange.Text = inputList;
+                    }
+                }
                 foreach (PowerPoint.Shape shape in Globals.ThisAddIn.Application.ActiveWindow.Selection.ShapeRange)
                 {
                     if (shape.HasTextFrame == Office.MsoTriState.msoTrue)
@@ -65,12 +85,21 @@ namespace CodeEvaluation
                             for (int i = 0; i < texts.Length; i++) {
                                 text += texts[i] + "\n";
                             }
+                            if (hasTableInput)
+                            {
+                                text = Auxiliary.ReplaceParametersWithTableInputList(text, tableInput);
+                            }
                             codes.Add(shapeName, text);
                             shapes.Add(shape);
                         }
                         else
                         {
-                            codes.Add(shape.Name, shape.TextFrame.TextRange.Text);
+                            string text = shape.TextFrame.TextRange.Text;
+                            if (hasTableInput)
+                            {
+                                text = Auxiliary.ReplaceParametersWithTableInputList(text, tableInput);
+                            }
+                            codes.Add(shape.Name, text);
                             shapes.Add(shape);
                         }
 
