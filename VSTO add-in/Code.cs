@@ -89,6 +89,7 @@ namespace CodeEvaluation
                             {
                                 text = Auxiliary.ReplaceParametersWithTableInputList(text, tableInput);
                             }
+                            shape.TextFrame.TextRange.Text = text;
                             codes.Add(shapeName, text);
                             shapes.Add(shape);
                         }
