@@ -132,9 +132,10 @@ namespace CodeEvaluation
             return commands;
         }
 
-        public static string GenerateTableInputList(PowerPoint.Shape table)
+        public static string GenerateTableInputList(PowerPoint.Shape table, string bracketType)
         {
-            string inputList = "[";
+            string inputList = "";
+            inputList += bracketType[0];
             for (int i = 2; i <= table.Table.Rows.Count; i++)
             {
                 for (int j = 1; j <= table.Table.Columns.Count; j++)
@@ -149,7 +150,7 @@ namespace CodeEvaluation
                     }
                 }
             }
-            inputList += "]";
+            inputList += bracketType[1];
             return inputList;
         }
 
