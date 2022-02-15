@@ -55,20 +55,40 @@ namespace CodeEvaluation
                 Dictionary<string, string> codes = new Dictionary<string, string>();
                 Dictionary<string, string> tableInput = new Dictionary<string, string>();
                 bool hasTableInput = false;
+                Language language = Language.Invalid;
+                foreach (PowerPoint.Shape shape in Globals.ThisAddIn.Application.ActiveWindow.Selection.ShapeRange)
+                {
+                    if (shape.Name.IndexOf("cpp") != -1)
+                    {
+                        language = Language.CPP;
+                        break;
+                    }
+                    else if (shape.Name.IndexOf("java") != -1)
+                    {
+                        language = Language.Java;
+                        break;
+                    }
+                    else if (shape.Name.IndexOf("python") != -1)
+                    {
+                        language = Language.Python;
+                        break;
+                    }
+                }
 
                 foreach (PowerPoint.Shape shape in Globals.ThisAddIn.Application.ActiveWindow.Selection.ShapeRange)
                 {
                     if (shape.HasTable == Office.MsoTriState.msoTrue)
                     {
                         hasTableInput = true;
-                        string inputList = Auxiliary.GenerateTableInputList(shape);
+                        string bucketType = (language == Language.Python) ? "[]" : "{}";
+                        string inputList = Auxiliary.GenerateTableInputList(shape, bucketType);
                         tableInput.Add(shape.Name, inputList);
                         //shape.Table.Cell(2, 1).Shape.TextFrame.TextRange.Text = inputList;
                     }
                 }
                 foreach (PowerPoint.Shape shape in Globals.ThisAddIn.Application.ActiveWindow.Selection.ShapeRange)
                 {
-                    if (shape.HasTextFrame == Office.MsoTriState.msoTrue)
+                    if (shape.HasTextFrame == Office.MsoTriState.msoTrue && shape.HasTable != Office.MsoTriState.msoTrue)
                     {
                         //to do!!!!!!!!!
                         //
@@ -89,6 +109,7 @@ namespace CodeEvaluation
                             {
                                 text = Auxiliary.ReplaceParametersWithTableInputList(text, tableInput);
                             }
+                          
                             shape.TextFrame.TextRange.Text = text;
                             codes.Add(shapeName, text);
                             shapes.Add(shape);
