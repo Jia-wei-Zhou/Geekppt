@@ -138,16 +138,34 @@ namespace CodeEvaluation
             inputList += bracketType[0];
             for (int i = 2; i <= table.Table.Rows.Count; i++)
             {
+                if (table.Table.Rows.Count > 2)
+                {
+                    inputList += bracketType[0];
+                }
+                bool isLineEmpty = true;
                 for (int j = 1; j <= table.Table.Columns.Count; j++)
                 {
-                    if (table.Table.Cell(i, j).Shape.TextFrame.TextRange.Text != null && table.Table.Cell(i, j).Shape.TextFrame.TextRange.Text != "")
+                    if (table.Table.Cell(i, j).Shape.TextFrame.TextRange.Text != "")
                     {
-                        inputList += table.Table.Cell(i, j).Shape.TextFrame.TextRange.Text;
-                        if (i != table.Table.Rows.Count || j != table.Table.Columns.Count)
+                        if (j != 1 && table.Table.Cell(i, j - 1).Shape.TextFrame.TextRange.Text == "" && isLineEmpty == false)
                         {
                             inputList += ",";
                         }
+                        inputList += table.Table.Cell(i, j).Shape.TextFrame.TextRange.Text;
+                        if (j != table.Table.Columns.Count && table.Table.Cell(i, j + 1).Shape.TextFrame.TextRange.Text != "")
+                        {
+                            inputList += ",";
+                        }
+                        isLineEmpty = false;
                     }
+                }
+                if (table.Table.Rows.Count > 2)
+                {
+                    inputList += bracketType[1];
+                }
+                if (i != table.Table.Rows.Count)
+                {
+                    inputList += ",";
                 }
             }
             inputList += bracketType[1];
