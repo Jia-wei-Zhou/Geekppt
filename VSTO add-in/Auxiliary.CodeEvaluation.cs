@@ -663,15 +663,58 @@ namespace CodeEvaluation
             string executable = GetPythonPath();
             cmdArgs = mainFile + cmdArgs;
             result = Auxiliary.RunProgram(executable, cmdArgs, inputs);
+            PowerPoint.Slide slide = (PowerPoint.Slide)Globals.ThisAddIn.Application.ActiveWindow.View.Slide;
+            List<string> shapenameBeforeAddPic = new List<string>();
+            string picNamePrefix = "python_pic";
+            foreach (PowerPoint.Shape shape in slide.Shapes)
+            {
+                shapenameBeforeAddPic.Add(shape.Name);
+            }
+
+            // delete picture whose name follows a certain name pattern
+            List<PowerPoint.Shape> deleteShapes = new List<PowerPoint.Shape>();
+            foreach (PowerPoint.Shape shape in slide.Shapes)
+            {
+                if (shape.Name.Contains(picNamePrefix))
+                {
+                    deleteShapes.Add(shape);
+                }
+            }
+
+            foreach (PowerPoint.Shape shape in deleteShapes)
+            {
+                shape.Delete();
+            }
+
+            // add picture with default name
+            int yPos = 0;
             if (pictureAddress.Count() > 0)
             {
                 foreach (var pic in pictureAddress)
                 {
-                    PowerPoint.Slide slide = (PowerPoint.Slide)Globals.ThisAddIn.Application.ActiveWindow.View.Slide;
                     var img = Image.FromFile(pic);
-                    float h = 250;
-                    float w = h * img.Width / img.Height;
-                    Auxiliary.AddPicture(pic, slide, 0, 0, w, h);
+                    float h = 300;
+                    float w = 300;
+                    if (img.Width / img.Height < 1)
+                    {
+                        w = h * img.Width / img.Height;
+                    }
+                    else
+                    {
+                        h = w * img.Height / img.Width;
+                    }
+                    Auxiliary.AddPicture(pic, slide, yPos / 601 * 300, yPos % 600, w, h);
+                    yPos += 300;
+                }
+            }
+
+            // ensure added picture have a certain name
+            int count = 1;
+            foreach (PowerPoint.Shape shape in slide.Shapes)
+            {
+                if (!shapenameBeforeAddPic.Contains(shape.Name))
+                {
+                    shape.Name = picNamePrefix + count++;
                 }
             }
 
