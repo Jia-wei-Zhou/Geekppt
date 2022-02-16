@@ -93,7 +93,7 @@ namespace CodeEvaluation
                         //to do!!!!!!!!!
                         //
 
-                        if (shape.Name.IndexOf("java") < 0 && shape.Name.IndexOf("python") < 0 && shape.Name.IndexOf("cpp") < 0 && shape.Name.IndexOf("general") < 0)
+                        if (shape.Name.IndexOf("java") < 0 && shape.Name.IndexOf("python") < 0 && shape.Name.IndexOf("c++") < 0 && shape.Name.IndexOf("general") < 0)
                         {
                             string[] separatingStrings = { "\r" ,"\n"};
                             string[] tags = shape.TextFrame.TextRange.Text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
