@@ -149,3 +149,7 @@ CTestTestfile.cmake
 # define your ignore file here
 output/
 .DS_Store
+
+
+# testfile ==========================
+temp_PPT_add_in/
