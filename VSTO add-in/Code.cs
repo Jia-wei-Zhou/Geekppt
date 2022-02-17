@@ -185,6 +185,17 @@ namespace CodeEvaluation
             return textBox;
         }
 
-
+        private void ChangeName_TextChanged(object sender, RibbonControlEventArgs e)
+        {
+            string name = this.ChangeName.Text;
+            foreach (PowerPoint.Shape shape in Globals.ThisAddIn.Application.ActiveWindow.Selection.ShapeRange)
+            {
+                shape.Name = name;
+                if (shape.HasTable == Office.MsoTriState.msoTrue)
+                {
+                    shape.Table.Cell(1, 1).Shape.TextFrame.TextRange.Text = name;
+                }
+            }
+        }
     }
 }
