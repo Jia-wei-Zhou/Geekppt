@@ -46,6 +46,7 @@
             this.group1 = this.Factory.CreateRibbonGroup();
             this.languageBox = this.Factory.CreateRibbonComboBox();
             this.evaluateButton = this.Factory.CreateRibbonButton();
+            this.ChangeName = this.Factory.CreateRibbonEditBox();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.SuspendLayout();
@@ -61,6 +62,7 @@
             this.group1.DialogLauncher = ribbonDialogLauncherImpl1;
             this.group1.Items.Add(this.languageBox);
             this.group1.Items.Add(this.evaluateButton);
+            this.group1.Items.Add(this.ChangeName);
             this.group1.Label = "group1";
             this.group1.Name = "group1";
             // 
@@ -91,6 +93,13 @@
             this.evaluateButton.Name = "evaluateButton";
             this.evaluateButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.evaluateButton_Click);
             // 
+            // ChangeName
+            // 
+            this.ChangeName.Label = "ChangeName";
+            this.ChangeName.Name = "ChangeName";
+            this.ChangeName.Text = null;
+            this.ChangeName.TextChanged += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.ChangeName_TextChanged);
+            // 
             // Code
             // 
             this.Name = "Code";
@@ -111,6 +120,7 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonGroup group1;
         internal Microsoft.Office.Tools.Ribbon.RibbonComboBox languageBox;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton evaluateButton;
+        internal Microsoft.Office.Tools.Ribbon.RibbonEditBox ChangeName;
     }
 
     partial class ThisRibbonCollection
