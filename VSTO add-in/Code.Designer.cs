@@ -47,6 +47,13 @@
             this.languageBox = this.Factory.CreateRibbonComboBox();
             this.evaluateButton = this.Factory.CreateRibbonButton();
             this.ChangeName = this.Factory.CreateRibbonEditBox();
+            this.cppMain = this.Factory.CreateRibbonButton();
+            this.cpp = this.Factory.CreateRibbonButton();
+            this.javaMain = this.Factory.CreateRibbonButton();
+            this.java = this.Factory.CreateRibbonButton();
+            this.python = this.Factory.CreateRibbonButton();
+            this.generalInputs = this.Factory.CreateRibbonButton();
+            this.parameterTable = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.SuspendLayout();
@@ -63,6 +70,13 @@
             this.group1.Items.Add(this.languageBox);
             this.group1.Items.Add(this.evaluateButton);
             this.group1.Items.Add(this.ChangeName);
+            this.group1.Items.Add(this.cppMain);
+            this.group1.Items.Add(this.cpp);
+            this.group1.Items.Add(this.javaMain);
+            this.group1.Items.Add(this.java);
+            this.group1.Items.Add(this.python);
+            this.group1.Items.Add(this.generalInputs);
+            this.group1.Items.Add(this.parameterTable);
             this.group1.Label = "group1";
             this.group1.Name = "group1";
             // 
@@ -100,6 +114,48 @@
             this.ChangeName.Text = null;
             this.ChangeName.TextChanged += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.ChangeName_TextChanged);
             // 
+            // cppMain
+            // 
+            this.cppMain.Label = "C++ main";
+            this.cppMain.Name = "cppMain";
+            this.cppMain.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.cppMain_Click);
+            // 
+            // cpp
+            // 
+            this.cpp.Label = "C++";
+            this.cpp.Name = "cpp";
+            this.cpp.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.cpp_Click);
+            // 
+            // javaMain
+            // 
+            this.javaMain.Label = "Java main";
+            this.javaMain.Name = "javaMain";
+            this.javaMain.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.javaMain_Click);
+            // 
+            // java
+            // 
+            this.java.Label = "Java";
+            this.java.Name = "java";
+            this.java.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.java_Click);
+            // 
+            // python
+            // 
+            this.python.Label = "Python";
+            this.python.Name = "python";
+            this.python.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.python_Click);
+            // 
+            // generalInputs
+            // 
+            this.generalInputs.Label = "General Inputs";
+            this.generalInputs.Name = "generalInputs";
+            this.generalInputs.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.generalInputs_Click);
+            // 
+            // parameterTable
+            // 
+            this.parameterTable.Label = "Parameter Table";
+            this.parameterTable.Name = "parameterTable";
+            this.parameterTable.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.parameterTable_Click);
+            // 
             // Code
             // 
             this.Name = "Code";
@@ -121,6 +177,13 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonComboBox languageBox;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton evaluateButton;
         internal Microsoft.Office.Tools.Ribbon.RibbonEditBox ChangeName;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton cppMain;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton cpp;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton javaMain;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton java;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton python;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton generalInputs;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton parameterTable;
     }
 
     partial class ThisRibbonCollection
