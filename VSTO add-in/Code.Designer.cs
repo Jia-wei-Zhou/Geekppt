@@ -1,7 +1,12 @@
-﻿namespace CodeEvaluation
+﻿using System;
+using System.Drawing;
+
+namespace CodeEvaluation
+    
 {
     partial class Code : Microsoft.Office.Tools.Ribbon.RibbonBase
     {
+        
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -10,7 +15,20 @@
         public Code()
             : base(Globals.Factory.GetRibbonFactory())
         {
+            
             InitializeComponent();
+            
+            string str1 = System.Environment.CurrentDirectory;
+            str1 = str1.Substring(0, str1.LastIndexOf("add-in")) + "add-in\\icons\\";
+            string cpp = str1 + "cpp.png";
+            string java = str1 + "java.jpg";
+            string python = str1 + "python.png";
+            this.cppMain.Image = System.Drawing.Image.FromFile(cpp);
+            this.cpp.Image = System.Drawing.Image.FromFile(cpp);
+            this.javaMain.Image = System.Drawing.Image.FromFile(java);
+            this.java.Image = System.Drawing.Image.FromFile(java);
+            this.python.Image = System.Drawing.Image.FromFile(python);
+      
         }
 
         /// <summary> 
@@ -25,6 +43,7 @@
             }
             base.Dispose(disposing);
         }
+
 
         #region Component Designer generated code
 
@@ -105,6 +124,7 @@
             // 
             this.evaluateButton.Label = "Evaluate";
             this.evaluateButton.Name = "evaluateButton";
+            this.evaluateButton.ShowImage = true;
             this.evaluateButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.evaluateButton_Click);
             // 
             // ChangeName
@@ -118,28 +138,36 @@
             // 
             this.cppMain.Label = "C++ main";
             this.cppMain.Name = "cppMain";
+            this.cppMain.ShowImage = true;
             this.cppMain.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.cppMain_Click);
             // 
             // cpp
             // 
             this.cpp.Label = "C++";
             this.cpp.Name = "cpp";
+            this.cpp.ShowImage = true;
             this.cpp.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.cpp_Click);
             // 
             // javaMain
             // 
             this.javaMain.Label = "Java main";
             this.javaMain.Name = "javaMain";
+            this.javaMain.ShowImage = true;
             this.javaMain.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.javaMain_Click);
             // 
             // java
             // 
             this.java.Label = "Java";
             this.java.Name = "java";
+            this.java.ShowImage = true;
             this.java.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.java_Click);
             // 
             // python
             // 
+            this.python.ImageName = "python";
+            this.python.Label = "Python";
+            this.python.Name = "python";
+            this.python.ShowImage = true;
             this.python.Label = "Python";
             this.python.Name = "python";
             this.python.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.python_Click);
@@ -184,6 +212,7 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonButton python;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton generalInputs;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton parameterTable;
+
     }
 
     partial class ThisRibbonCollection
