@@ -23,11 +23,13 @@ namespace CodeEvaluation
             string cpp = str1 + "cpp.png";
             string java = str1 + "java.jpg";
             string python = str1 + "python.png";
+            string evaluation = str1 + "evaluation.png";
             this.cppMain.Image = System.Drawing.Image.FromFile(cpp);
             this.cpp.Image = System.Drawing.Image.FromFile(cpp);
             this.javaMain.Image = System.Drawing.Image.FromFile(java);
             this.java.Image = System.Drawing.Image.FromFile(java);
             this.python.Image = System.Drawing.Image.FromFile(python);
+            this.evaluateButton.Image = System.Drawing.Image.FromFile(evaluation);
       
         }
 

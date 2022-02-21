@@ -183,9 +183,10 @@ namespace CodeEvaluation
                             }
 
                             shape.TextFrame.TextRange.Text = text;
+                            shape.Name = shapeName;
                             codes.Add(shape.Name, text);
                             shapes.Add(shape);
-                            shape.Name = shapeName;
+                            
                         }
                         else
                         {
