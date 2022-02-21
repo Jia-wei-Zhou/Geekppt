@@ -209,7 +209,7 @@ namespace CodeEvaluation
         internal Microsoft.Office.Tools.Ribbon.RibbonButton java;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton generalInputs;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton parameterTable;
-        private Microsoft.Office.Tools.Ribbon.RibbonButton python;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton python;
     }
 
     partial class ThisRibbonCollection
