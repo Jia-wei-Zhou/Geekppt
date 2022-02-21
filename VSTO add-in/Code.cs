@@ -84,8 +84,6 @@ namespace CodeEvaluation
             
         }
 
-       
-
         private void languageBox_TextChanged(object sender, RibbonControlEventArgs e)
         {
             // obtain the selected language
@@ -182,9 +180,10 @@ namespace CodeEvaluation
                             }
 
                             shape.TextFrame.TextRange.Text = text;
+                            shape.Name = shapeName;
                             codes.Add(shape.Name, text);
                             shapes.Add(shape);
-                            shape.Name = shapeName;
+                            
                         }
                         else
                         {
