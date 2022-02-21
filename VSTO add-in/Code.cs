@@ -6,6 +6,7 @@ using System.IO;
 using Microsoft.Office.Tools.Ribbon;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
 using Office = Microsoft.Office.Core;
+using System.Drawing;
 
 namespace CodeEvaluation
 {
@@ -13,8 +14,76 @@ namespace CodeEvaluation
     {
         private void Code_Load(object sender, RibbonUIEventArgs e)
         {
+            
+    
+        }
+
+        private void cppMain_Click(object sender, RibbonControlEventArgs e)
+        {
+            string language = "C++ main";
+            add_shape(language);
+
+            
+        }
+
+        private void cpp_Click(object sender, RibbonControlEventArgs e)
+        {
+            string language = "C++";
+            add_shape(language);
+        }
+
+        private void javaMain_Click(object sender, RibbonControlEventArgs e)
+        {
+            string language = "Java main";
+            add_shape(language);
+        }
+
+        private void java_Click(object sender, RibbonControlEventArgs e)
+        {
+            string language = "Java";
+            add_shape(language);
+        }
+
+        private void python_Click(object sender, RibbonControlEventArgs e)
+        {
+            string language = "Python";
+            add_shape(language);
+            
+            
 
         }
+
+        private void generalInputs_Click(object sender, RibbonControlEventArgs e)
+        {
+            string language = "General Inputs";
+            add_shape(language);
+        }
+
+        private void parameterTable_Click(object sender, RibbonControlEventArgs e)
+        {
+            // obtain current active slide
+            PowerPoint.Slide slide = (PowerPoint.Slide)Globals.ThisAddIn.Application.ActiveWindow.View.Slide;
+            PowerPoint.Shape table = slide.Shapes.AddTable(2, 3, 0, 0);
+            table.Name = Auxiliary.GenerateCodeTableName();
+            table.Table.Cell(1, 1).Merge(table.Table.Cell(1, 3));
+            table.Table.Cell(1, 1).Shape.TextFrame.TextRange.Text = table.Name;
+            return;
+        }
+
+
+        private void add_shape(string language)
+        {
+            string text = language.Equals("General Inputs", StringComparison.OrdinalIgnoreCase) ?
+               "Input arguments (separate by a space or new line)" : String.Format("Please insert your {0} code", language);
+
+            // obtain current active slide
+            PowerPoint.Slide slide = (PowerPoint.Slide)Globals.ThisAddIn.Application.ActiveWindow.View.Slide;
+            PowerPoint.Shape textBox = AddTextBox(slide, "Arial", 18, "000000", text);
+            BoxContent content = language.Equals("General Inputs", StringComparison.OrdinalIgnoreCase) ? BoxContent.Input : BoxContent.Code;
+            textBox.Name = Auxiliary.GenerateCodeBoxName(language, content);
+            
+        }
+
 
         private void languageBox_TextChanged(object sender, RibbonControlEventArgs e)
         {
@@ -47,7 +116,7 @@ namespace CodeEvaluation
             PowerPoint.Slide slide = (PowerPoint.Slide)Globals.ThisAddIn.Application.ActiveWindow.View.Slide;
             List<PowerPoint.Shape> shapes = new List<PowerPoint.Shape>();
             string color = Auxiliary.GenerateColor();
-            
+
 
             try
             {
@@ -95,21 +164,22 @@ namespace CodeEvaluation
 
                         if (shape.Name.IndexOf("java") < 0 && shape.Name.IndexOf("python") < 0 && shape.Name.IndexOf("c++") < 0 && shape.Name.IndexOf("general") < 0)
                         {
-                            string[] separatingStrings = { "\r" ,"\n"};
+                            string[] separatingStrings = { "\r", "\n" };
                             string[] tags = shape.TextFrame.TextRange.Text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
                             string tag = tags[0];
                             string shapeName = Auxiliary.GenerateCodeBoxNameForMd(tag);
                             separatingStrings[0] = tag;
                             string[] texts = shape.TextFrame.TextRange.Text.Split(separatingStrings, StringSplitOptions.RemoveEmptyEntries);
                             string text = null;
-                            for (int i = 0; i < texts.Length; i++) {
+                            for (int i = 0; i < texts.Length; i++)
+                            {
                                 text += texts[i] + "\n";
                             }
                             if (hasTableInput)
                             {
                                 text = Auxiliary.ReplaceParametersWithTableInputList(text, tableInput);
                             }
-                          
+
                             shape.TextFrame.TextRange.Text = text;
                             codes.Add(shape.Name, text);
                             shapes.Add(shape);
@@ -185,6 +255,17 @@ namespace CodeEvaluation
             return textBox;
         }
 
-
+        private void ChangeName_TextChanged(object sender, RibbonControlEventArgs e)
+        {
+            string name = this.ChangeName.Text;
+            foreach (PowerPoint.Shape shape in Globals.ThisAddIn.Application.ActiveWindow.Selection.ShapeRange)
+            {
+                shape.Name = name;
+                if (shape.HasTable == Office.MsoTriState.msoTrue)
+                {
+                    shape.Table.Cell(1, 1).Shape.TextFrame.TextRange.Text = name;
+                }
+            }
+        }
     }
 }
