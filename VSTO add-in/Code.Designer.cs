@@ -168,6 +168,8 @@ namespace CodeEvaluation
             this.python.Label = "Python";
             this.python.Name = "python";
             this.python.ShowImage = true;
+            this.python.Label = "Python";
+            this.python.Name = "python";
             this.python.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.python_Click);
             // 
             // generalInputs
@@ -207,9 +209,10 @@ namespace CodeEvaluation
         internal Microsoft.Office.Tools.Ribbon.RibbonButton cpp;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton javaMain;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton java;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton python;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton generalInputs;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton parameterTable;
-        private Microsoft.Office.Tools.Ribbon.RibbonButton python;
+
     }
 
     partial class ThisRibbonCollection
