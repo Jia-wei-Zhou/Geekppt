@@ -84,9 +84,6 @@ namespace CodeEvaluation
             
         }
 
-        
-
-
         private void languageBox_TextChanged(object sender, RibbonControlEventArgs e)
         {
             // obtain the selected language
