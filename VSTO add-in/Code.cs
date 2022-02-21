@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -83,6 +83,8 @@ namespace CodeEvaluation
             textBox.Name = Auxiliary.GenerateCodeBoxName(language, content);
             
         }
+
+        
 
 
         private void languageBox_TextChanged(object sender, RibbonControlEventArgs e)
