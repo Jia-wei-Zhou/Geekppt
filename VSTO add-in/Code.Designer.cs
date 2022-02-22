@@ -71,8 +71,9 @@
             this.python = this.Factory.CreateRibbonButton();
             this.generalInputs = this.Factory.CreateRibbonButton();
             this.parameterTable = this.Factory.CreateRibbonButton();
-            this.reformatCode = this.Factory.CreateRibbonButton();
             this.group2 = this.Factory.CreateRibbonGroup();
+            this.reformatCode = this.Factory.CreateRibbonButton();
+            this.button1 = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.group2.SuspendLayout();
@@ -161,12 +162,10 @@
             // 
             // python
             // 
-
             this.python.ImageName = "python";
             this.python.Label = "Python";
             this.python.Name = "python";
             this.python.ShowImage = true;
-
             this.python.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.python_Click);
             // 
             // generalInputs
@@ -183,6 +182,13 @@
             this.parameterTable.ShowImage = true;
             this.parameterTable.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.parameterTable_Click);
             // 
+            // group2
+            // 
+            this.group2.Items.Add(this.reformatCode);
+            this.group2.Items.Add(this.button1);
+            this.group2.Label = "group2";
+            this.group2.Name = "group2";
+            // 
             // reformatCode
             // 
             this.reformatCode.Label = "reformat code";
@@ -190,11 +196,11 @@
             this.reformatCode.ShowImage = true;
             this.reformatCode.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.removeTag_Click);
             // 
-            // group2
+            // button1
             // 
-            this.group2.Items.Add(this.reformatCode);
-            this.group2.Label = "group2";
-            this.group2.Name = "group2";
+            this.button1.Label = "Plot Template";
+            this.button1.Name = "button1";
+            this.button1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button1_Click);
             // 
             // Code
             // 
@@ -228,6 +234,7 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonButton parameterTable;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton reformatCode;
         internal Microsoft.Office.Tools.Ribbon.RibbonGroup group2;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton button1;
     }
 
     partial class ThisRibbonCollection
