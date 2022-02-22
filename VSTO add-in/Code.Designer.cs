@@ -1,4 +1,6 @@
-﻿namespace CodeEvaluation
+﻿using System.IO;
+
+namespace CodeEvaluation
 {
     partial class Code : Microsoft.Office.Tools.Ribbon.RibbonBase
     {
@@ -11,9 +13,9 @@
             : base(Globals.Factory.GetRibbonFactory())
         {
             InitializeComponent();
-  
-            string str1 = System.Environment.CurrentDirectory;
-            str1 = str1.Substring(0, str1.LastIndexOf("add-in")) + "add-in\\icons\\";
+
+            string str1 = Directory.GetCurrentDirectory();
+            str1 += Path.DirectorySeparatorChar + "icons" + Path.DirectorySeparatorChar;
             string cpp = str1 + "cpp.png";
             string java = str1 + "java.jpg";
             string python = str1 + "python.png";
