@@ -16,6 +16,7 @@ namespace CodeEvaluation
 
         }
 
+
         private void cppMain_Click(object sender, RibbonControlEventArgs e)
         {
             string language = "C++ main";
@@ -45,6 +46,7 @@ namespace CodeEvaluation
             string language = "Python";
             add_shape(language);
         }
+
 
         private void generalInputs_Click(object sender, RibbonControlEventArgs e)
         {
@@ -172,9 +174,10 @@ namespace CodeEvaluation
                             }
                           
                             shape.TextFrame.TextRange.Text = text;
+                            shape.Name = shapeName;
                             codes.Add(shape.Name, text);
                             shapes.Add(shape);
-                            shape.Name = shapeName;
+                            
                         }
                         else
                         {
