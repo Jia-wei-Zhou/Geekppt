@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +6,6 @@ using System.IO;
 using Microsoft.Office.Tools.Ribbon;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
 using Office = Microsoft.Office.Core;
-using System.Drawing;
 
 namespace CodeEvaluation
 {
@@ -14,16 +13,14 @@ namespace CodeEvaluation
     {
         private void Code_Load(object sender, RibbonUIEventArgs e)
         {
-            
-    
+
         }
+
 
         private void cppMain_Click(object sender, RibbonControlEventArgs e)
         {
             string language = "C++ main";
             add_shape(language);
-
-            
         }
 
         private void cpp_Click(object sender, RibbonControlEventArgs e)
@@ -49,6 +46,7 @@ namespace CodeEvaluation
             string language = "Python";
             add_shape(language);
         }
+
 
         private void generalInputs_Click(object sender, RibbonControlEventArgs e)
         {
@@ -141,8 +139,8 @@ namespace CodeEvaluation
             PowerPoint.Shape textBox = AddTextBox(slide, "Arial", 18, "000000", text);
             BoxContent content = language.Equals("General Inputs", StringComparison.OrdinalIgnoreCase) ? BoxContent.Input : BoxContent.Code;
             textBox.Name = Auxiliary.GenerateCodeBoxName(language, content);
-            
         }
+        
 
         private void languageBox_TextChanged(object sender, RibbonControlEventArgs e)
         {
@@ -175,7 +173,7 @@ namespace CodeEvaluation
             PowerPoint.Slide slide = (PowerPoint.Slide)Globals.ThisAddIn.Application.ActiveWindow.View.Slide;
             List<PowerPoint.Shape> shapes = new List<PowerPoint.Shape>();
             string color = Auxiliary.GenerateColor();
-
+            
 
             try
             {
@@ -223,22 +221,21 @@ namespace CodeEvaluation
 
                         if (shape.Name.IndexOf("java") < 0 && shape.Name.IndexOf("python") < 0 && shape.Name.IndexOf("c++") < 0 && shape.Name.IndexOf("general") < 0)
                         {
-                            string[] separatingStrings = { "\r", "\n" };
+                            string[] separatingStrings = { "\r" ,"\n"};
                             string[] tags = shape.TextFrame.TextRange.Text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
                             string tag = tags[0];
                             string shapeName = Auxiliary.GenerateCodeBoxNameForMd(tag);
                             separatingStrings[0] = tag;
                             string[] texts = shape.TextFrame.TextRange.Text.Split(separatingStrings, StringSplitOptions.RemoveEmptyEntries);
                             string text = null;
-                            for (int i = 0; i < texts.Length; i++)
-                            {
+                            for (int i = 0; i < texts.Length; i++) {
                                 text += texts[i] + "\n";
                             }
                             if (hasTableInput)
                             {
                                 text = Auxiliary.ReplaceParametersWithTableInputList(text, tableInput);
                             }
-
+                          
                             shape.TextFrame.TextRange.Text = text;
                             shape.Name = shapeName;
                             codes.Add(shape.Name, text);
