@@ -217,19 +217,29 @@ namespace CodeEvaluation
                 }
             };
 
-            process.Start();
-            if (!inputs.Equals(""))
+            try
             {
-                string[] lines = inputs.Split('\n');
-                foreach (var cmd in lines)
+                process.Start();
+                if (!inputs.Equals(""))
                 {
-                    process.StandardInput.WriteLine(cmd);
+                    string[] lines = inputs.Split('\n');
+                    foreach (var cmd in lines)
+                    {
+                        process.StandardInput.WriteLine(cmd);
+                    }
                 }
+                string result = process.StandardOutput.ReadToEnd();
+                process.Close();
+                return result;
             }
-            string result = process.StandardOutput.ReadToEnd();
-            process.Close();
-
-            return result;
+            catch(System.ComponentModel.Win32Exception e)
+            {
+                return String.Format($"Executable file {executable}.exe not found");
+            }
+            catch(Exception e)
+            {
+                return "Error occurred in your source code";
+            }
         }
 
         /// <summary>
@@ -245,10 +255,6 @@ namespace CodeEvaluation
         {
             slide.Shapes.AddPicture(file_path, Microsoft.Office.Core.MsoTriState.msoFalse, Microsoft.Office.Core.MsoTriState.msoTrue, x, y, width, height);
         }
-    
-
-        
-        
     }
 
     public interface ICodeEvaluation
@@ -441,7 +447,6 @@ namespace CodeEvaluation
         private List<string> libs;
         private string mainFile;
         private const Language TYPE = Language.CPP;
-        private readonly string OS_NAME;
         private readonly string CODE_FOLDER;
 
         public List<string> TextAddress
@@ -454,11 +459,6 @@ namespace CodeEvaluation
             get => mainFile;
         }
 
-        public string OSName
-        {
-            get => OS_NAME;
-        }
-
         public string CodeFolder
         {
             get => CODE_FOLDER;
@@ -466,7 +466,6 @@ namespace CodeEvaluation
 
         public CodeEvaluationCpp(string mainFile, List<string> textAddress)
         {
-            OS_NAME = Environment.OSVersion.Platform.ToString();
             CODE_FOLDER = Auxiliary.CreateFolder(Auxiliary.GenerateRandomName(), Auxiliary.tempFolder, true);
             libs = new List<string>();
             this.textAddress = textAddress;
@@ -475,26 +474,31 @@ namespace CodeEvaluation
 
         public void CreateSourceFile()
         {
-            foreach (var address in textAddress)
-            {
-                string filename = CodeFolder + Path.DirectorySeparatorChar + Auxiliary.GenerateRandomName() + ".cpp";
-                string content = File.ReadAllText(address);
-                File.WriteAllText(filename, content);
-                libs.Add(filename);
-            }
-
+            string[] codeMain = File.ReadAllLines(MainFile);
             string sourceMain = CodeFolder + Path.DirectorySeparatorChar + "main.cpp";
-            using (var writer = new StreamWriter(sourceMain))
+            using(var writer = new StreamWriter(sourceMain))
             {
-                foreach (var address in TextAddress)
+                int i = 0;
+                for(; i < codeMain.Length; i++)
                 {
-                    string line = String.Format($"#include \"{Path.GetFileName(address)}\"");
-                    writer.WriteLine(line);
+                    if(codeMain[i].StartsWith("int main"))
+                    {
+                        break;
+                    }
+                    writer.WriteLine(codeMain[i]);
                 }
 
-                writer.Write(File.ReadAllText(MainFile));
+                foreach(var address in textAddress)
+                {
+                    string content = File.ReadAllText(address);
+                    writer.Write(content + "\n\n");
+                }
+
+                for(; i < codeMain.Length; i++)
+                {
+                    writer.WriteLine(codeMain[i]);
+                }
             }
-            mainFile = sourceMain;
         }
 
         private string GenerateCmakeLists(int cppStandard = 20, string cmakeMinVersion = "3.10")
@@ -533,8 +537,7 @@ namespace CodeEvaluation
 
         public bool RunCode(out string result, string cmdArgs = "", string inputs = "")
         {
-            GenerateCmakeLists();
-            string buildDir = CompileCode(out string init, out string build);
+            string buildDir = CompileCode(out string compile);
 
             string current = Directory.GetCurrentDirectory();
             Directory.SetCurrentDirectory(buildDir);
@@ -544,15 +547,13 @@ namespace CodeEvaluation
             return true;
         }
 
-        private string CompileCode(out string init, out string build)
+        private string CompileCode(out string result)
         {
             string buildDir = Auxiliary.CreateFolder("build", CodeFolder, true);
             string current = Directory.GetCurrentDirectory();
             Directory.SetCurrentDirectory(buildDir);
 
-            init = Auxiliary.RunProgram("cmake", "-G \"MinGW Makefiles\" ../");
-            init = Auxiliary.RunProgram("cmake", "-G \"MinGW Makefiles\" ../");
-            build = Auxiliary.RunProgram("cmake", "--build .");
+            result = Auxiliary.RunProgram("g++", "../main.cpp -o main");
 
             Directory.SetCurrentDirectory(current);
             return buildDir;
