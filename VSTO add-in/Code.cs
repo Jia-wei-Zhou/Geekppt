@@ -121,7 +121,7 @@ namespace CodeEvaluation
         {
             // obtain current active slide
             PowerPoint.Slide slide = (PowerPoint.Slide)Globals.ThisAddIn.Application.ActiveWindow.View.Slide;
-            PowerPoint.Shape table = slide.Shapes.AddTable(2, 3, 0, 0);
+            PowerPoint.Shape table = slide.Shapes.AddTable(3, 3, 0, 0);
             table.Name = Auxiliary.GenerateCodeTableName();
             table.Table.Cell(1, 1).Merge(table.Table.Cell(1, 3));
             table.Table.Cell(1, 1).Shape.TextFrame.TextRange.Text = table.Name;
@@ -325,6 +325,28 @@ namespace CodeEvaluation
             }
         }
 
-
+        private void button1_Click(object sender, RibbonControlEventArgs e)
+        {
+            foreach (PowerPoint.Shape shape in Globals.ThisAddIn.Application.ActiveWindow.Selection.ShapeRange)
+            {
+                if (shape.HasTable == Office.MsoTriState.msoTrue)
+                {
+                    string pythonPlotTemplate = "import matplotlib.pyplot as plt" + System.Environment.NewLine +
+                    "plt.title(\"Scatter Diagram\")" + System.Environment.NewLine +
+                "plt.xlabel(\"Horizontal Axis\")" + System.Environment.NewLine +
+                "plt.ylabel(\"Vertical Axis\")" + System.Environment.NewLine +
+                "plt.plot(" + shape.Name + "[0]," + shape.Name + "[1],'bo')" + System.Environment.NewLine + System.Environment.NewLine +
+                "### if you need" + System.Environment.NewLine +
+                "# plt.xlim(xmax=???,xmin=???)" + System.Environment.NewLine +
+                "# plt.ylim(ymax=???,ymin=???)" + System.Environment.NewLine +
+                "# plt.annotate(\"???\", xy = ???, xytext = ???, arrowprops = dict(facecolor = 'black', shrink = 0.1))" + System.Environment.NewLine +
+                "plt.show()";
+                    PowerPoint.Slide slide = (PowerPoint.Slide)Globals.ThisAddIn.Application.ActiveWindow.View.Slide;
+                    PowerPoint.Shape textBox = AddTextBox(slide, "Arial", 18, "000000", pythonPlotTemplate);
+                    BoxContent content = BoxContent.Code;
+                    textBox.Name = Auxiliary.GenerateCodeBoxName("python", content);
+                }
+            }
+        }
     }
 }
