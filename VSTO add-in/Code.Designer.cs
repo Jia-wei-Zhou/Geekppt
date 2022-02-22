@@ -54,16 +54,8 @@ namespace CodeEvaluation
         private void InitializeComponent()
         {
             Microsoft.Office.Tools.Ribbon.RibbonDialogLauncher ribbonDialogLauncherImpl1 = this.Factory.CreateRibbonDialogLauncher();
-            Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl1 = this.Factory.CreateRibbonDropDownItem();
-            Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl2 = this.Factory.CreateRibbonDropDownItem();
-            Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl3 = this.Factory.CreateRibbonDropDownItem();
-            Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl4 = this.Factory.CreateRibbonDropDownItem();
-            Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl5 = this.Factory.CreateRibbonDropDownItem();
-            Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl6 = this.Factory.CreateRibbonDropDownItem();
-            Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl7 = this.Factory.CreateRibbonDropDownItem();
             this.tab1 = this.Factory.CreateRibbonTab();
             this.group1 = this.Factory.CreateRibbonGroup();
-            this.languageBox = this.Factory.CreateRibbonComboBox();
             this.evaluateButton = this.Factory.CreateRibbonButton();
             this.ChangeName = this.Factory.CreateRibbonEditBox();
             this.cppMain = this.Factory.CreateRibbonButton();
@@ -91,39 +83,14 @@ namespace CodeEvaluation
             // group1
             // 
             this.group1.DialogLauncher = ribbonDialogLauncherImpl1;
-            this.group1.Items.Add(this.languageBox);
-            this.group1.Items.Add(this.evaluateButton);
-            this.group1.Items.Add(this.ChangeName);
             this.group1.Items.Add(this.cppMain);
             this.group1.Items.Add(this.cpp);
             this.group1.Items.Add(this.javaMain);
             this.group1.Items.Add(this.java);
             this.group1.Items.Add(this.python);
             this.group1.Items.Add(this.generalInputs);
-            this.group1.Items.Add(this.parameterTable);
-            this.group1.Label = "group1";
+            this.group1.Label = "Languages";
             this.group1.Name = "group1";
-            // 
-            // languageBox
-            // 
-            ribbonDropDownItemImpl1.Label = "C++ main";
-            ribbonDropDownItemImpl2.Label = "C++";
-            ribbonDropDownItemImpl3.Label = "Java main";
-            ribbonDropDownItemImpl4.Label = "Java";
-            ribbonDropDownItemImpl5.Label = "Python";
-            ribbonDropDownItemImpl6.Label = "General Inputs";
-            ribbonDropDownItemImpl7.Label = "parameter table";
-            this.languageBox.Items.Add(ribbonDropDownItemImpl1);
-            this.languageBox.Items.Add(ribbonDropDownItemImpl2);
-            this.languageBox.Items.Add(ribbonDropDownItemImpl3);
-            this.languageBox.Items.Add(ribbonDropDownItemImpl4);
-            this.languageBox.Items.Add(ribbonDropDownItemImpl5);
-            this.languageBox.Items.Add(ribbonDropDownItemImpl6);
-            this.languageBox.Items.Add(ribbonDropDownItemImpl7);
-            this.languageBox.Label = "Language";
-            this.languageBox.Name = "languageBox";
-            this.languageBox.Text = null;
-            this.languageBox.TextChanged += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.languageBox_TextChanged);
             // 
             // evaluateButton
             // 
@@ -186,9 +153,12 @@ namespace CodeEvaluation
             // 
             // group2
             // 
+            this.group2.Items.Add(this.evaluateButton);
             this.group2.Items.Add(this.reformatCode);
             this.group2.Items.Add(this.button1);
-            this.group2.Label = "group2";
+            this.group2.Items.Add(this.parameterTable);
+            this.group2.Items.Add(this.ChangeName);
+            this.group2.Label = "Functionalities";
             this.group2.Name = "group2";
             // 
             // reformatCode
@@ -224,7 +194,6 @@ namespace CodeEvaluation
 
         internal Microsoft.Office.Tools.Ribbon.RibbonTab tab1;
         internal Microsoft.Office.Tools.Ribbon.RibbonGroup group1;
-        internal Microsoft.Office.Tools.Ribbon.RibbonComboBox languageBox;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton evaluateButton;
         internal Microsoft.Office.Tools.Ribbon.RibbonEditBox ChangeName;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton cppMain;

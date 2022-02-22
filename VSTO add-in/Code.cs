@@ -140,29 +140,6 @@ namespace CodeEvaluation
             BoxContent content = language.Equals("General Inputs", StringComparison.OrdinalIgnoreCase) ? BoxContent.Input : BoxContent.Code;
             textBox.Name = Auxiliary.GenerateCodeBoxName(language, content);
         }
-        
-
-        private void languageBox_TextChanged(object sender, RibbonControlEventArgs e)
-        {
-            // obtain the selected language
-            string language = this.languageBox.Text;
-            string text = language.Equals("General Inputs", StringComparison.OrdinalIgnoreCase) ?
-                "Input arguments (separate by a space or new line)" : String.Format("Please insert your {0} code", language);
-
-            // obtain current active slide
-            PowerPoint.Slide slide = (PowerPoint.Slide)Globals.ThisAddIn.Application.ActiveWindow.View.Slide;
-            if (language == "parameter table")
-            {
-                PowerPoint.Shape table = slide.Shapes.AddTable(2, 3, 0, 0);
-                table.Name = Auxiliary.GenerateCodeTableName();
-                table.Table.Cell(1, 1).Merge(table.Table.Cell(1, 3));
-                table.Table.Cell(1, 1).Shape.TextFrame.TextRange.Text = table.Name;
-                return;
-            }
-            PowerPoint.Shape textBox = AddTextBox(slide, "Arial", 18, "000000", text);
-            BoxContent content = language.Equals("General Inputs", StringComparison.OrdinalIgnoreCase) ? BoxContent.Input : BoxContent.Code;
-            textBox.Name = Auxiliary.GenerateCodeBoxName(language, content);
-        }
 
         private void evaluateButton_Click(object sender, RibbonControlEventArgs e)
         {
