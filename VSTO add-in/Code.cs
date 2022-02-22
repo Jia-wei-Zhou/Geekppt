@@ -54,6 +54,69 @@ namespace CodeEvaluation
             add_shape(language);
         }
 
+        private void removeTag_Click(object sender, RibbonControlEventArgs e)
+        {
+            
+            List<PowerPoint.Shape> shapes = new List<PowerPoint.Shape>();
+            string color = Auxiliary.GenerateColor();
+            foreach (PowerPoint.Slide slide in Globals.ThisAddIn.Application.ActivePresentation.Slides)
+            {
+                
+                try
+                {
+                    // obtain all the selected textboxes   
+                    Dictionary<string, string> codes = new Dictionary<string, string>();
+                    Dictionary<string, string> tableInput = new Dictionary<string, string>();
+                    bool hasTableInput = false;
+
+
+                    foreach (PowerPoint.Shape shape in slide.Shapes)
+                    {
+                        if (shape.HasTextFrame == Office.MsoTriState.msoTrue && shape.HasTable != Office.MsoTriState.msoTrue)
+                        {
+                            //to do!!!!!!!!!
+                            //
+                            string[] listTags = { "@code_java_main", "@code_java", "@code_python", "@input_general" };
+
+                            if (shape.Name.IndexOf("java") < 0 && shape.Name.IndexOf("python") < 0 && shape.Name.IndexOf("c++") < 0 && shape.Name.IndexOf("general") < 0)
+                            {
+                                string[] separatingStrings = { "\r", "\n" };
+                                string[] tags = shape.TextFrame.TextRange.Text.Split(separatingStrings, System.StringSplitOptions.RemoveEmptyEntries);
+                                string tag = tags[0];
+                                if (listTags.Contains(tag)) {
+                                    string shapeName = Auxiliary.GenerateCodeBoxNameForMd(tag);
+                                    separatingStrings[0] = tag;
+                                    string[] texts = shape.TextFrame.TextRange.Text.Split(separatingStrings, StringSplitOptions.RemoveEmptyEntries);
+                                    string text = null;
+                                    for (int i = 0; i < texts.Length; i++)
+                                    {
+                                        text += texts[i] + "\n";
+                                    }
+                                    if (hasTableInput)
+                                    {
+                                        text = Auxiliary.ReplaceParametersWithTableInputList(text, tableInput);
+                                    }
+
+                                    shape.TextFrame.TextRange.Text = text;
+                                    shape.Name = shapeName;
+                                    shapes.Add(shape);
+                                }
+                                
+
+                            }
+                           
+                        }
+                    }
+                }
+                catch (System.Runtime.InteropServices.COMException exception)
+                {
+                    Console.WriteLine(exception.ToString());
+                }
+
+
+            }
+                
+        }
         private void parameterTable_Click(object sender, RibbonControlEventArgs e)
         {
             // obtain current active slide
@@ -261,5 +324,7 @@ namespace CodeEvaluation
                 }
             }
         }
+
+
     }
 }

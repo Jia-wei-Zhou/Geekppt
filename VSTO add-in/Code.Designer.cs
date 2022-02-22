@@ -18,12 +18,16 @@
             string java = str1 + "java.jpg";
             string python = str1 + "python.png";
             string evaluation = str1 + "evaluation.png";
+            string reformat = str1 + "reformat.png";
             this.cppMain.Image = System.Drawing.Image.FromFile(cpp);
             this.cpp.Image = System.Drawing.Image.FromFile(cpp);
             this.javaMain.Image = System.Drawing.Image.FromFile(java);
             this.java.Image = System.Drawing.Image.FromFile(java);
             this.python.Image = System.Drawing.Image.FromFile(python);
             this.evaluateButton.Image = System.Drawing.Image.FromFile(evaluation);
+            this.reformatCode.Image = System.Drawing.Image.FromFile(reformat);
+            this.generalInputs.Image = System.Drawing.Image.FromFile(reformat);
+            this.parameterTable.Image = System.Drawing.Image.FromFile(reformat);
         }
 
         /// <summary> 
@@ -67,13 +71,17 @@
             this.python = this.Factory.CreateRibbonButton();
             this.generalInputs = this.Factory.CreateRibbonButton();
             this.parameterTable = this.Factory.CreateRibbonButton();
+            this.reformatCode = this.Factory.CreateRibbonButton();
+            this.group2 = this.Factory.CreateRibbonGroup();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
+            this.group2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tab1
             // 
             this.tab1.Groups.Add(this.group1);
+            this.tab1.Groups.Add(this.group2);
             this.tab1.Label = "Code Evaluation";
             this.tab1.Name = "tab1";
             // 
@@ -165,13 +173,28 @@
             // 
             this.generalInputs.Label = "General Inputs";
             this.generalInputs.Name = "generalInputs";
+            this.generalInputs.ShowImage = true;
             this.generalInputs.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.generalInputs_Click);
             // 
             // parameterTable
             // 
             this.parameterTable.Label = "Parameter Table";
             this.parameterTable.Name = "parameterTable";
+            this.parameterTable.ShowImage = true;
             this.parameterTable.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.parameterTable_Click);
+            // 
+            // reformatCode
+            // 
+            this.reformatCode.Label = "reformat code";
+            this.reformatCode.Name = "reformatCode";
+            this.reformatCode.ShowImage = true;
+            this.reformatCode.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.removeTag_Click);
+            // 
+            // group2
+            // 
+            this.group2.Items.Add(this.reformatCode);
+            this.group2.Label = "group2";
+            this.group2.Name = "group2";
             // 
             // Code
             // 
@@ -183,6 +206,8 @@
             this.tab1.PerformLayout();
             this.group1.ResumeLayout(false);
             this.group1.PerformLayout();
+            this.group2.ResumeLayout(false);
+            this.group2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -201,6 +226,8 @@
         internal Microsoft.Office.Tools.Ribbon.RibbonButton python;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton generalInputs;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton parameterTable;
+        internal Microsoft.Office.Tools.Ribbon.RibbonButton reformatCode;
+        internal Microsoft.Office.Tools.Ribbon.RibbonGroup group2;
     }
 
     partial class ThisRibbonCollection
