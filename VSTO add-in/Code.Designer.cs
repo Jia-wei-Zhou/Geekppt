@@ -56,18 +56,18 @@ namespace CodeEvaluation
             Microsoft.Office.Tools.Ribbon.RibbonDialogLauncher ribbonDialogLauncherImpl1 = this.Factory.CreateRibbonDialogLauncher();
             this.tab1 = this.Factory.CreateRibbonTab();
             this.group1 = this.Factory.CreateRibbonGroup();
-            this.evaluateButton = this.Factory.CreateRibbonButton();
-            this.ChangeName = this.Factory.CreateRibbonEditBox();
             this.cppMain = this.Factory.CreateRibbonButton();
             this.cpp = this.Factory.CreateRibbonButton();
             this.javaMain = this.Factory.CreateRibbonButton();
             this.java = this.Factory.CreateRibbonButton();
             this.python = this.Factory.CreateRibbonButton();
             this.generalInputs = this.Factory.CreateRibbonButton();
-            this.parameterTable = this.Factory.CreateRibbonButton();
             this.group2 = this.Factory.CreateRibbonGroup();
+            this.evaluateButton = this.Factory.CreateRibbonButton();
             this.reformatCode = this.Factory.CreateRibbonButton();
             this.button1 = this.Factory.CreateRibbonButton();
+            this.parameterTable = this.Factory.CreateRibbonButton();
+            this.ChangeName = this.Factory.CreateRibbonEditBox();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.group2.SuspendLayout();
@@ -91,19 +91,6 @@ namespace CodeEvaluation
             this.group1.Items.Add(this.generalInputs);
             this.group1.Label = "Languages";
             this.group1.Name = "group1";
-            // 
-            // evaluateButton
-            // 
-            this.evaluateButton.Label = "Evaluate";
-            this.evaluateButton.Name = "evaluateButton";
-            this.evaluateButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.evaluateButton_Click);
-            // 
-            // ChangeName
-            // 
-            this.ChangeName.Label = "ChangeName";
-            this.ChangeName.Name = "ChangeName";
-            this.ChangeName.Text = null;
-            this.ChangeName.TextChanged += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.ChangeName_TextChanged);
             // 
             // cppMain
             // 
@@ -144,13 +131,6 @@ namespace CodeEvaluation
             this.generalInputs.ShowImage = true;
             this.generalInputs.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.generalInputs_Click);
             // 
-            // parameterTable
-            // 
-            this.parameterTable.Label = "Parameter Table";
-            this.parameterTable.Name = "parameterTable";
-            this.parameterTable.ShowImage = true;
-            this.parameterTable.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.parameterTable_Click);
-            // 
             // group2
             // 
             this.group2.Items.Add(this.evaluateButton);
@@ -160,6 +140,12 @@ namespace CodeEvaluation
             this.group2.Items.Add(this.ChangeName);
             this.group2.Label = "Functionalities";
             this.group2.Name = "group2";
+            // 
+            // evaluateButton
+            // 
+            this.evaluateButton.Label = "Evaluate";
+            this.evaluateButton.Name = "evaluateButton";
+            this.evaluateButton.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.evaluateButton_Click);
             // 
             // reformatCode
             // 
@@ -173,6 +159,20 @@ namespace CodeEvaluation
             this.button1.Label = "Plot Template";
             this.button1.Name = "button1";
             this.button1.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button1_Click);
+            // 
+            // parameterTable
+            // 
+            this.parameterTable.Label = "Parameter Table";
+            this.parameterTable.Name = "parameterTable";
+            this.parameterTable.ShowImage = true;
+            this.parameterTable.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.parameterTable_Click);
+            // 
+            // ChangeName
+            // 
+            this.ChangeName.Label = "ChangeName";
+            this.ChangeName.Name = "ChangeName";
+            this.ChangeName.Text = null;
+            this.ChangeName.TextChanged += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.ChangeName_TextChanged);
             // 
             // Code
             // 

@@ -6,18 +6,29 @@ using System.Xml.Linq;
 using PowerPoint = Microsoft.Office.Interop.PowerPoint;
 using Office = Microsoft.Office.Core;
 using Microsoft.Office.Interop.PowerPoint;
+using System.IO;
 
 namespace CodeEvaluation
 {
     public partial class ThisAddIn
     {
+        const string tempFolder = "temp_PPT_add_in";
+
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
-
+            
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
         {
+            try
+            {
+                Directory.Delete(tempFolder, true);
+            }
+            catch(IOException exception)
+            {
+                Console.WriteLine(exception);
+            }
         }
 
         #region VSTO generated code
