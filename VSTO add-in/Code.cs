@@ -11,6 +11,8 @@ namespace CodeEvaluation
 {
     public partial class Code
     {
+        const string tempFolder = "temp_PPT_add_in";
+
         private void Code_Load(object sender, RibbonUIEventArgs e)
         {
 
@@ -143,9 +145,8 @@ namespace CodeEvaluation
 
         private void evaluateButton_Click(object sender, RibbonControlEventArgs e)
         {
-
             // create a new folder for the selected code
-            string path = Auxiliary.CreateFolder("temp_PPT_add_in", Directory.GetCurrentDirectory());
+            string path = Auxiliary.CreateFolder(tempFolder, Directory.GetCurrentDirectory());
             // obtain current slide
             PowerPoint.Slide slide = (PowerPoint.Slide)Globals.ThisAddIn.Application.ActiveWindow.View.Slide;
             List<PowerPoint.Shape> shapes = new List<PowerPoint.Shape>();
