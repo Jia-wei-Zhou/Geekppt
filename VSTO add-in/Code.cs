@@ -145,7 +145,7 @@ namespace CodeEvaluation
         {
 
             // create a new folder for the selected code
-            string path = Auxiliary.CreateFolder("temp_PPT_add_in", Directory.GetCurrentDirectory(), true);
+            string path = Auxiliary.CreateFolder("temp_PPT_add_in", Directory.GetCurrentDirectory());
             // obtain current slide
             PowerPoint.Slide slide = (PowerPoint.Slide)Globals.ThisAddIn.Application.ActiveWindow.View.Slide;
             List<PowerPoint.Shape> shapes = new List<PowerPoint.Shape>();
@@ -237,7 +237,16 @@ namespace CodeEvaluation
                 Auxiliary.GenerateTextFileAndInputs(codes, path, out var files, out var main, out var inputs);
                 if (!Auxiliary.ObtainLanguageType(codes, out Language type))
                 {
-                    AddTextBox(slide, "Arial", 18, color, "More than one programming languages are selected");
+                    if (type == Language.Invalid)
+                    {
+                        AddTextBox(slide, "Arial", 18, color, "No valid language is selected");
+                        return;
+                    }
+                    else
+                    {
+                        AddTextBox(slide, "Arial", 18, color, "More than one programming languages are selected");
+                        return;
+                    }                    
                 }
 
                 ICodeEvaluation evaluate;
