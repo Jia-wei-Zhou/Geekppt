@@ -21,14 +21,23 @@ namespace CodeEvaluation
             string python = str1 + "python.png";
             string evaluation = str1 + "evaluation.png";
             string reformat = str1 + "reformat.png";
+            this.cppMain.ShowImage = true;
             this.cppMain.Image = System.Drawing.Image.FromFile(cpp);
+            this.cpp.ShowImage = true;
             this.cpp.Image = System.Drawing.Image.FromFile(cpp);
+            this.javaMain.ShowImage = true;
             this.javaMain.Image = System.Drawing.Image.FromFile(java);
+            this.java.ShowImage = true;
             this.java.Image = System.Drawing.Image.FromFile(java);
+            this.python.ShowImage = true;
             this.python.Image = System.Drawing.Image.FromFile(python);
+            this.evaluateButton.ShowImage = true;
             this.evaluateButton.Image = System.Drawing.Image.FromFile(evaluation);
+            this.reformatCode.ShowImage = true;
             this.reformatCode.Image = System.Drawing.Image.FromFile(reformat);
+            this.generalInputs.ShowImage = true;
             this.generalInputs.Image = System.Drawing.Image.FromFile(reformat);
+            this.parameterTable.ShowImage = true;
             this.parameterTable.Image = System.Drawing.Image.FromFile(reformat);
         }
 
