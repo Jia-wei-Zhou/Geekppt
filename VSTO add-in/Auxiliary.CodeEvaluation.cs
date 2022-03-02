@@ -685,6 +685,7 @@ namespace CodeEvaluation
             PowerPoint.Slide slide = (PowerPoint.Slide)Globals.ThisAddIn.Application.ActiveWindow.View.Slide;
             List<string> shapenameBeforeAddPic = new List<string>();
             string picNamePrefix = "python_pic";
+            // get shapes' names before adding picture
             foreach (PowerPoint.Shape shape in slide.Shapes)
             {
                 shapenameBeforeAddPic.Add(shape.Name);
@@ -722,7 +723,7 @@ namespace CodeEvaluation
                     {
                         h = w * img.Height / img.Width;
                     }
-                    Auxiliary.AddPicture(pic, slide, yPos / 601 * 300, yPos % 600, w, h);
+                    Auxiliary.AddPicture(pic, slide, yPos / 600 * 300, yPos % 600, w, h);
                     yPos += 300;
                 }
             }
