@@ -692,40 +692,60 @@ namespace CodeEvaluation
             }
 
             // delete picture whose name follows a certain name pattern
-            List<PowerPoint.Shape> deleteShapes = new List<PowerPoint.Shape>();
+            List<PowerPoint.Shape> previouslyAddedPictures = new List<PowerPoint.Shape>();
             foreach (PowerPoint.Shape shape in slide.Shapes)
             {
                 if (shape.Name.Contains(picNamePrefix))
                 {
-                    deleteShapes.Add(shape);
+                    previouslyAddedPictures.Add(shape);
                 }
             }
 
-            foreach (PowerPoint.Shape shape in deleteShapes)
-            {
-                shape.Delete();
-            }
-
-            // add picture with default name
-            int yPos = 0;
+            // still add pictures, but use previous poicture styles if possible
+            int yPos = 0; // This is used when adding new pictures
+            int count = 1; // used to count new picture numbers
             if (pictureAddress.Count() > 0)
             {
                 foreach (var pic in pictureAddress)
                 {
-                    var img = Image.FromFile(pic);
-                    float h = 300;
-                    float w = 300;
-                    if (img.Width / img.Height < 1)
+                    // repalce
+                    if (count <= previouslyAddedPictures.Count())
                     {
-                        w = h * img.Width / img.Height;
+                        var previousPic = previouslyAddedPictures[count - 1];
+                        float l = previousPic.Left;
+                        float t = previousPic.Top;
+                        float h = previousPic.Height;
+                        float w = previousPic.Width;
+                        // var img = Image.FromFile(pic);
+                        Auxiliary.AddPicture(pic, slide, l, t, w, h);
+                        previouslyAddedPictures[count - 1].Fill.UserPicture(pic);
+                        count++;
                     }
+                    // add
                     else
                     {
-                        h = w * img.Height / img.Width;
+                        var img = Image.FromFile(pic);
+                        float h = 300;
+                        float w = 300;
+
+                        if (img.Width / img.Height < 1)
+                        {
+                            w = h * img.Width / img.Height;
+                        }
+                        else
+                        {
+                            h = w * img.Height / img.Width;
+                        }
+                        Auxiliary.AddPicture(pic, slide, yPos / 600 * 300, yPos % 600, w, h);
+                        count++;
+                        yPos += 300;
                     }
-                    Auxiliary.AddPicture(pic, slide, yPos / 600 * 300, yPos % 600, w, h);
-                    yPos += 300;
                 }
+            }
+
+            foreach (PowerPoint.Shape shape in previouslyAddedPictures)
+            {
+                shape.Delete();
             }
 
             // ensure added picture have a certain name
