@@ -1,6 +1,6 @@
 # Geekppt
 
-## A powerful slide making tool -- run code in textbox
+## A powerful slide making tool -- execute code in textbox
 
 This is a MSc Computing group project in Imperial College London -- "A literate programming environment for PowerPoint". 
 
@@ -25,17 +25,17 @@ TBI by WZF
 
 ### Create codebox, click to execute
 
-In order to create a codebox, simply click on a language button. For example, to create a Python codebox, simply click on the ```Python``` button, type in python code (such as ```print("Hello")```), then click the ```evaluate``` button, "Hello" will be shown in a new inserted textbox. 
+Click on a language button to create a codebox. For example, to create a Python codebox, simply click on the ```Python``` button, type in some code (such as ```print("Hello")```). To execute the code, click the ```evaluate``` button, "Hello" will be shown in a newly inserted textbox. 
 
-Currently the addin supports C++, Java and Python. It is worth noting that using C++ and Java requires creating main function and helper function with different buttons. When running main function with multiple helper functions, make sure they are the same language, then choose them all and click ```evaluate``` to get results. 
+Currently the addin supports C++, Java and Python. It is worth noting that using C++ and Java requires creating main function and helper functions with different buttons. Before executing main function with multiple helper functions, make sure they are the same language, then choose them all and click ```evaluate``` to get results. 
 
 ### add input to you code
 
-Adding inputs can be easy using the ```General Inputs``` button. After creating input, choose the input box, codeboxes that requires input, click ```evaluate``` to get results. 
+Adding inputs can be easy using the ```General Inputs``` button. After creating a input box, choose it with codeboxes that requires input, click ```evaluate``` to get results. 
 
 ### graphical output
 
-Graphical output can be triggered using ```plt.show()``` in Python. A ```plt.show()``` will result in a figure inserted in current slide. You can use multiple ```plt.show()``` to insert many image. The addin does not support ```plt.show()``` in loops.
+Graphical output can be triggered using ```plt.show()``` in Python. A ```plt.show()``` will result in a figure inserted in current slide. You can use multiple ```plt.show()``` to insert many images. The addin does not support ```plt.show()``` in loops.
 
 Copy the following Python code in a codebox and try ```evaluate``` it to check the effect.
 
@@ -71,4 +71,3 @@ TBI by LWX, ZJW
 ## License
 
 TBI by ZQH
-
