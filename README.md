@@ -58,7 +58,9 @@ plt.show()
 
 ### parameter table and plot template
 
-TBI by ZQH
+Use ```Parameter Table``` to generate a parameter table where you can add any row or column and write data into cells. The first row of the table defaults to the table name, which means that it will not be entered as an argument. It would help if you replaced the table name with the appropriate place in the code block to ensure it doesn't go wrong.
+
+You can then select a parameter table and click the ```Plot Template button``` to generate a block of Python code. Using it, you can draw a simple scatter plot (based on the data in the table).
 
 ### conversion to ppt with codebox enabled
 
